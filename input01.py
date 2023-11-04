@@ -118,6 +118,7 @@ def do_work():
             input_buffer = ""
             output_buffer = ""
             prompt_buffer = ""
+            show_dict('', prompt_dict)
         elif key == ' ':
             input_buffer += '_'
             for i in range(0, len(input_buffer), 3):
@@ -129,6 +130,7 @@ def do_work():
             print(f"Current Input Key: {input_buffer}")
             print(f"Output Buffer: {output_buffer}")
             prompt_buffer = ""
+            show_dict('', prompt_dict)
         elif ord(key) == 127:  # Handle backspace
             if input_buffer:
                 input_buffer = input_buffer[:-1]
