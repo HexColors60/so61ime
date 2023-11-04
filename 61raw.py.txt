@@ -1,0 +1,7 @@
+
+$ python3 61raw.py > /dev/shm/raw.txt
+$ python3 raw2table.py > /dev/shm/tmp.txt
+
+Copy and edit tmp.txt to so61utf8.txt
+
+Remove from "/__"
