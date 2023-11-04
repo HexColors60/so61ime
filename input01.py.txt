@@ -1,0 +1,39 @@
+$ python3 input01.py
+１２３４５６７８９０
+中會有的對上了是就我
+一為在國他要地以大個
+和到出不這用來人時，
+Input Key: a
+１２３４５６７８９０
+而厚隔正亞下丙百隨阿
+三於破陳隊礦壓限天平
+元研陰原放確除礎附方
+Prompt Keys: a
+Input Key: b
+１２３４５６７８９０
+﹏﹏夒憂陱﹏磝礉礅礹
+﹏﹏硬更﹏隞陵﹏磢﹏
+﹏﹏﹏夏﹏﹏敶﹏﹏﹏
+Prompt Keys: ab
+Input Key:
+Input Buffer: ab_
+Output Buffer: 放
+Current Input Key: ab_
+Output String: 放
+Current Input Key: ab_
+Output Buffer: ab
+Prompt Keys: ab_
+Input Key: y
+１２３４５６７８９０
+牽好貿忘玄卡刻衣市如
+姐卵奴留也斷主娘媽率
+奶她世妳夜離印畝妒女
+Prompt Keys: ab_y
+Input Key:
+Input Buffer: ab_y__
+Output Buffer: 放上
+Current Input Key: ab_y__
+Output String: 放上
+Current Input Key: ab_y__
+Output Buffer: aby
+Prompt Keys: ab_y__
