@@ -125,7 +125,9 @@ def lookup_ab_dict(key, next_number):
             tmp += char
 
     key = tmp  # Update the key to exclude the numeric part
-    next_number = now
+    if now != 0:
+        next_number = now
+    
     if next_number == 0:
         tmp_ab_buffer = ""
         return False
@@ -134,7 +136,8 @@ def lookup_ab_dict(key, next_number):
             # return ab_dict[key][next_number]
             print(f"ab_dict {key} {next_number} {ab_dict[key][next_number]}")
             tmp_ab_buffer = ab_dict[key][next_number]
-            return True
+            # return True
+            return tmp_ab_buffer
         else:
             # return f"Next number {next_number} not found for key {key}"
             return False
@@ -172,6 +175,23 @@ def prompt_keys(input_buffer):
     prompt_buffer = input_buffer.replace(' ', '_')
     print(f"Prompt Keys: {prompt_buffer}")
 
+import re
+
+def extract_ab_and_number(input_buffer):
+    # Define regular expression patterns for the non-number and number parts
+    non_number_pattern = r'^\D+'
+    number_pattern = r'\d+'
+    
+    # Use re.search to find the first match in the input_buffer for each pattern
+    non_number_match = re.search(non_number_pattern, input_buffer)
+    number_match = re.search(number_pattern, input_buffer)
+    
+    # Extract ab_buffer and number, or set number to 0 if no match is found
+    ab_buffer = non_number_match.group(0) if non_number_match else ''
+    number = int(number_match.group(0)) if number_match else 0
+    
+    return ab_buffer, number
+
 def process_input_buffer(input_buffer, output_buffer):
     # Split input_buffer into 3-key pairs and perform the TABLE search
     output_table_keys = ""
@@ -180,8 +200,29 @@ def process_input_buffer(input_buffer, output_buffer):
     # if ab_buffer in ab_dict:
     #     output_table_keys += ab_dict[ab_buffer]
     # else:    
+    offset = 0
     for i in range(0, len(input_buffer), 3):
-        current_key = input_buffer[i:i+3]
+        ab_buffer, number = extract_ab_and_number(input_buffer[i + offset:].replace('_', '').upper())
+        # ab_buffer = input_buffer.replace('_', '').upper()
+        # if ab_buffer in ab_dict:
+        tmp = lookup_ab_dict(ab_buffer, number)
+        if tmp:
+            # output_table_keys += tmp_ab_buffer # Not ab_dict[ab_buffer]
+            output_table_keys += tmp
+            print(f"Output String: {output_table_keys}")
+            # input_buffer = ""
+            if number:
+               offset += len(ab_buffer) + len(str(number))
+            else:
+               offset += len(ab_buffer)
+
+        # if number:
+        #    tmp_key = input_buffer[i:].replace(ab_buffer + str(number), "");
+        # else:
+        #    tmp_key = input_buffer[i:].replace(ab_buffer, "");
+        
+        current_key = input_buffer[i + offset:i+offset+3]
+        # tmp_key = xxx
         while len(current_key) < 3:
             current_key += "_"
         current_key = current_key.upper()
@@ -189,7 +230,7 @@ def process_input_buffer(input_buffer, output_buffer):
             output_table_keys += table1_dict[current_key]
             # output_table_keys += so61utf8_dict[current_key]
 
-    output_buffer = output_table_keys
+    output_buffer += output_table_keys
 
     print(f"Input Buffer: {input_buffer.replace(' ', '_')}")
     print(f"Output Buffer: {output_buffer.replace(' ', '_')}")
@@ -223,13 +264,14 @@ def do_work():
             # show_dict('', ab_dict)
             show_dict('', prompt_dict)
         elif key == ' ':
-            ab_buffer = input_buffer.replace('_', '').upper()
+            # ab_buffer = input_buffer.replace('_', '').upper()
             # if ab_buffer in ab_dict:
-            if lookup_ab_dict(ab_buffer, 0):
-                output_table_keys = tmp_ab_buffer # Not ab_dict[ab_buffer]
-                print(f"Output String: {output_table_keys}")
-                input_buffer = ""
-            else:    
+            # if lookup_ab_dict(ab_buffer, 0):
+            #    output_table_keys = tmp_ab_buffer # Not ab_dict[ab_buffer]
+            #    print(f"Output String: {output_table_keys}")
+            #    # input_buffer = ""
+            # else:    
+            if True:
                 input_buffer += '_'
                 for i in range(0, len(input_buffer), 3):
                     current_key = input_buffer[i:i+3]
@@ -240,6 +282,7 @@ def do_work():
                 print(f"Current Input Key: {input_buffer}")
                 print(f"Output Buffer: {output_buffer}")
             prompt_buffer = ""
+            input_buffer = ""
             # show_dict('', ab_dict)
             show_dict('', prompt_dict)
         elif ord(key) == 127:  # Handle backspace
