@@ -1,0 +1,17 @@
+
+testab.txt
+ab AB
+ab1 ONE
+ab2 TWO
+ab AC
+ab13 THREE
+
+$ python3 test_ab6.py 
+Debug: ab 1 => ONE AB
+Debug: ab 2 => TWO AB
+ab 1 => ONE
+ab 0 => 5
+ab 2 => TWO
+ab 3 => AB
+ab 4 => AC
+ab 13 => THREE
