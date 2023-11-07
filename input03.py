@@ -99,6 +99,8 @@ def build_ab_dict(ab_folder, table_dict):
                     data = data.strip()
                     build_ab_dict_tmp(ab_entry, data)
                     # ab_dict[ab_entry] = data
+                else:
+                    build_ab_dict_tmp(key.upper(), data)
     
     return ab_dict
 
