@@ -240,7 +240,8 @@ def process_input_buffer(input_buffer, output_buffer):
     print(f"Output Buffer: {output_buffer.replace(' ', '_')}")
     print(f"Current Input Key: {input_buffer}")
     print(f"Output String: {output_table_keys}")
-
+    return output_table_keys
+    
 def clear_outstr():
     # Define your clear_outstr function if needed
     pass
@@ -282,7 +283,7 @@ def do_work():
                     while len(current_key) < 3:
                         current_key += "_"
                         input_buffer += '_'
-                process_input_buffer(input_buffer, output_buffer)
+                output_buffer += process_input_buffer(input_buffer, output_buffer)
                 print(f"Current Input Key: {input_buffer}")
                 print(f"Output Buffer: {output_buffer}")
             prompt_buffer = ""
@@ -292,13 +293,13 @@ def do_work():
         elif ord(key) == 127:  # Handle backspace
             if input_buffer:
                 input_buffer = input_buffer[:-1]
-                output_buffer = output_buffer[:-1]
+                # output_buffer = output_buffer[:-1]
                 prompt_buffer = prompt_buffer[:-1]
         elif key == '`':
             debug_ab(ab_dict)
         else:
             input_buffer += key
-            output_buffer += key
+            # output_buffer += key
             prompt_buffer += key
             # show_dict(prompt_buffer, ab_dict)
             show_dict(prompt_buffer, prompt_dict)
