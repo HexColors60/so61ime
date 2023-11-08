@@ -82,7 +82,9 @@ def build_ab_dict_tmp(key, value):
 
 def build_ab_dict(ab_folder, table_dict):
     ab_dict = {}
-    for ab_file in glob.glob(os.path.join(ab_folder, '*.ab')):
+    # for ab_file in glob.glob(os.path.join(ab_folder, '*.ab')):
+    file_list = sorted(glob.glob(os.path.join(ab_folder, '*.ab')))
+    for ab_file in file_list:
         with open(ab_file, 'r', encoding='utf-8') as file:
             lines = file.read().split('\n')
 
