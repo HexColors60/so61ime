@@ -271,6 +271,8 @@ def read_key():
     rlist, _, _ = select.select([sys.stdin], [], [], 10)
 
     if rlist:
+        # key2 = ord(key)
+        # print(f"Key {key2}")
         key = sys.stdin.read(1)
         print(f"Input Key: {key}")  # Prompt for the key you input
 
@@ -435,7 +437,8 @@ def do_work():
         key = read_key()
 
         if key is None:
-            break
+            # break
+            continue
 
         if ord(key) == 10:  # Enter key (newline)
             process_input_buffer(input_buffer, output_buffer)
@@ -474,6 +477,8 @@ def do_work():
                 prompt_buffer = prompt_buffer[:-1]
         elif key == '`':
             debug_ab(ab_dict)
+        # elif key == 0x4:
+        #    break
         else:
             if ord(key) > 127 and is_utf8_character(key):
                 show_code(key)
