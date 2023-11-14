@@ -534,6 +534,12 @@ def do_work():
                 prompt_buffer = prompt_buffer[:-1]
         elif key == '=':
             show_roots()
+        elif key == '-':
+            if output_buffer:
+                last_character = output_buffer[-1]
+                show_code(last_character)
+            else:
+                print(f"The input buffer is empty. {input_buffer} ")
         elif key == '`':
             debug_ab(ab_dict)
         # elif key == 0x4:
