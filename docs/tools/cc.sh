@@ -12,3 +12,5 @@ output_file="${filename%.htm}.htm"
 iconv -f big5 -t utf8 "$input_file" > "$output_file"
 
 echo "Conversion completed. Output file: $output_file"
+
+bash fixname.sh "$output_file"
