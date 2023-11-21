@@ -107,7 +107,7 @@ def show_str(input_str):
     output_str = ""
     for char in input_str:
         if char in table_dict:
-            output_str += char + " " + " ".join(table_dict[char]) + "\n"
+            output_str += char + " " + " ".join(table_dict[char]) # + "\n"
         else:
             output_str += char + " (No TABLE key)\n"
 
