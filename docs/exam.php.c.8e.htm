@@ -1,0 +1,431 @@
+<style type="text/css">
+A:link {color:#1111ff;text-decoration: none}
+A:visited {color:#333399;text-decoration: none}
+A:hover {color:#0D1CAB;text-decoration: underline;background-color:yellow}
+input.bt{cursor:pointer;background-color:#ffffcc;border:outset black;border-width:1}
+</style>
+ <html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="pragma" content="no-cache">
+
+<script>
+var lop=0;
+var atQus=0;
+var rightSum=0;
+var tm;
+var wds="";
+var ans="";
+var hadTimes=0;
+var rightAns=0;
+var wrongAns=0;
+var thisAns="";
+var hadErr=0;
+var errTime=0;//已打錯次數
+var errLimit=2;//打錯幾次算錯，可為 0 或 -1 一字可能計多次
+var showLimit=4;//打錯幾題秀拆碼
+var allLimit=8;//換下一題
+var tim=0;
+var twoChar="子面水體些間關新心看又此問建無很立代已直展五位文式資級知運幾強被做先回色光保治造規七口器階油極共證再更切教速花務目至鬥類八名傳馬今許段觀越容兒連斷省史感勞市周斯按始圓包火紅養德呢席執木圍費練犯吸草黃態散若菜啊茶斤剛貴呀鎮婚夢察惱婰霎坼笙匰屄居叵";
+var twoAns="XY=KA=KV=E,=R;=KT=IT=XQ=KR=QO=DA=K.=IW=LI=OS=.Z=HF=KG=XD=;X=.V=G;=,Y=BV=SP=K,=TL=OI=LK=S;=UM=B,=,X=QW=FZ=UK=VC=,F=EC=LH=HC=JQ=PU=PD=KL=D.=MR=CI=XB=KM=KB=SQ=;H=LA=ST=UY=FA=CY=QS=BR=KW=IG=,C=LZ=XS=XH=QM=SM=JF=CT=ZB=L;=YX=V,=QV=SO=VK=YO=EG=C.=NT=Y.=F,=TJ=VH=T.=GZ=.;=P.=GV=JB=MI=FB=QI=TK=GC=PT=XE=CD=CQ=CC=XW=XT=PQ=X,=QL=EA=QT=PV=KY=YC=XK=RV/RFHYHZUYAJYZZAP,;Q.;Z.PS.PX";
+var timeStart=0;
+var timeOther=0;
+var lvNow=3;
+
+
+function prek(e){
+	var t3="",ee;
+	
+	if(!document.all&&(e.altKey|| e.ctrlKey|| e.shiftKey))
+		return true;
+	
+	
+	
+	if(document.all)
+		ee=window.event.keyCode;
+	else
+		ee= e.keyCode ;
+	if(ee==123){//F8,clear
+		eval(document.getElementById('dv9').innerHTML='');
+		return false;
+	}
+	if(ee==119){//F8，上一頁
+		location='exam.php.c.8d.htm';
+		return false;
+	}
+	if(ee==120){//F9，下一頁
+		location='exam.php.c.8f.htm';
+		return false;
+	}
+	if(atQus==0){//開始
+	  if(ee == 32){
+			timeStart= new Date().getTime();//取得從1970年1月1日以來的毫秒數。
+			//alert(timeStart);
+			timeOther=0;
+	    init(1);
+	    nextQus();
+	  }
+	  return false;
+	}	
+	
+  if(ee == 27||ee == 8||(ee==32&&lop==0)||(ee>=48&&ee<=57)){//
+  	if(lop>0)
+  		hadErr++;
+    document.getElementById('dv4').innerHTML="";
+    lop=0;
+		return false;
+	}
+	
+  //alert(ee);
+  //toString(ee);
+  if(lop==0)
+    document.getElementById('dv4').innerHTML="";
+  if(!gt(ee)){
+    return true;
+    //return false;
+  }
+  lop=(lop+1)%3;
+  document.getElementById('dv4').innerHTML=document.getElementById('dv4').innerHTML+gt(ee);
+
+  if(ee==32){
+    lop=0;
+  }
+  if(lop==0){
+  	t=twoChar.indexOf(wds.substring(atQus-1,atQus));
+	  if(t>-1){
+			t1=twoAns.substring(t*3,t*3+3);
+		  for(i=0;i<3;i++){
+		    t2="ABCDEFGHIJKLMNOPQRSTUVWXYZ;,./=".indexOf(t1.substring(i,i+1));
+		    if(t2>-1)
+		      t3+="一乂廿三３四五六８七八九木手９０１４二５７火２卄６竹十人尸∕◎".substring(t2,t2+1);
+		  }
+	  	//alert(wds.substring(atQus-1,atQus)+"=="+t1+"==="+t3);
+  	}
+    if(document.getElementById('dv4').innerHTML==t3||document.getElementById('dv4').innerHTML==thisAns){
+    	
+      if(errLimit==-1&&hadErr>0){
+        wrongAns+=hadErr;
+        document.getElementById('dv9').innerHTML+=wds.substring(atQus-1,atQus);
+      }else if(errLimit==0 && hadErr>0){
+        wrongAns++;
+        document.getElementById('dv9').innerHTML+=wds.substring(atQus-1,atQus);
+      }else if(errLimit>0 && errTime>=errLimit){
+        wrongAns++;
+        document.getElementById('dv9').innerHTML+=wds.substring(atQus-1,atQus);
+      }else{
+        rightAns++;
+      }
+      //document.getElementById('ds6').innerHTML="YYY";
+    }else{
+    	hadErr++;
+      if(++errTime>=showLimit){
+       	showAns();
+      }
+      if(errTime<allLimit){
+        return false;
+      }
+      if(errLimit==-1)
+      	wrongAns+=(errTime+hadErr);
+      wrongAns++;
+      document.getElementById('dv9').innerHTML+=wds.substring(atQus-1,atQus);
+  	}
+  	errTime=0;
+  	hadErr=0;
+    nextQus();
+    return false;
+  }
+  return false;
+
+}
+function nextQus(){
+  atQus++;
+  if(atQus>wds.length){
+   document.getElementById('dv1').innerHTML=wds;//.substring(0,atQus);
+    document.getElementById('dv2').innerHTML="<font color='red'>完</font>";
+    //document.getElementById('dv3').innerHTML="";
+    document.getElementById('dv4').innerHTML="按空白鍵開始";
+    if(tm)
+      clearTimeout(tm);
+    document.getElementById('ds3').innerHTML= wrongAns+" / "+(atQus-1);
+    //document.getElementById('ds4').innerHTML= rightAns+" / "+wds.length;
+
+    atQus=0;
+    return;
+  }
+  document.getElementById('dv1').innerHTML=wds.substring(0,atQus-1);
+  document.getElementById('dv2').innerHTML=wds.substring(atQus-1,atQus);
+  document.getElementById('dv3').innerHTML=wds.substring(atQus);
+
+  if(cs.substring(atQus-1,atQus)=="1"){
+    document.getElementById('tdv2').style.background='#aaeeee'; 
+  }else if(cs.substring(atQus-1,atQus)=="2"){
+    document.getElementById('tdv2').style.background='#eeaaaa'; 
+  }else{
+    document.getElementById('tdv2').style.background='#FFFFFF'; 
+  }
+  if(errLimit==-1)
+  	document.getElementById('ds1').innerHTML= rightAns+" / "+wds.length;
+  document.getElementById('ds3').innerHTML= wrongAns+" / "+(atQus-1);
+
+  showAns();
+}
+function setLv(lv){
+	if(atQus!=0)
+	return;
+	lvNow=lv;
+	if(lvNow<1)
+		lvNow=1;
+	if(lvNow>5)
+		lvNow=5;
+		
+	switch (lvNow){
+		case 0:
+		case 1:
+			errLimit=4;
+			showLimit=2;
+			allLimit=6;
+			if(document.form0.isShowAns.checked==false)
+				document.form0.isShowAns.click();
+			if(document.form0.isTimer.checked==true)
+				document.form0.isTimer.click();
+		  document.getElementById('ds0').innerHTML="練習";
+		break;
+		case 2:
+			errLimit=3;
+			showLimit=3;
+			allLimit=8;
+			if(document.form0.isShowAns.checked==true)
+				document.form0.isShowAns.click();
+			if(document.form0.isShowLast.checked==false)
+				document.form0.isShowLast.click();
+			if(document.form0.isTimer.checked==true)
+				document.form0.isTimer.click();
+		  document.getElementById('ds0').innerHTML="初學";
+		break;
+		case 3:
+			errLimit=2;
+			showLimit=4;
+			allLimit=10;
+			if(document.form0.isShowAns.checked==true)
+				document.form0.isShowAns.click();
+			if(document.form0.isShowLast.checked==true)
+				document.form0.isShowLast.click();
+			if(document.form0.isTimer.checked==false)
+				document.form0.isTimer.click();
+		  document.getElementById('ds0').innerHTML="一般";
+		break;
+		case 4:
+			errLimit=0;
+			showLimit=6;
+			allLimit=99;
+			if(document.form0.isShowAns.checked==true)
+				document.form0.isShowAns.click();
+			if(document.form0.isShowLast.checked==true)
+				document.form0.isShowLast.click();
+			if(document.form0.isTimer.checked==false)
+				document.form0.isTimer.click();
+		  document.getElementById('ds0').innerHTML="進階";
+		break;
+		case 5:
+		case 6:
+			errLimit=-1;
+			showLimit=8;
+			allLimit=99;
+			if(document.form0.isShowAns.checked==true)
+				document.form0.isShowAns.click();
+			if(document.form0.isShowLast.checked==true)
+				document.form0.isShowLast.click();
+			if(document.form0.isTimer.checked==false)
+				document.form0.isTimer.click();
+		  document.getElementById('ds0').innerHTML="高手";
+		break;
+	}
+			
+}
+
+function showAns(){
+  thisAns="";
+  for(i=0;i<3;i++){
+    t="ABCDEFGHIJKLMNOPQRSTUVWXYZ;,./=".indexOf(ans.substring(atQus*3+i-3,atQus*3+i-2));
+    if(t>-1)
+      thisAns+="一乂廿三３四五六８七八九木手９０１４二５７火２卄６竹十人尸∕◎".substring(t,t+1);
+  }
+  if(document.form0.isShowAns.checked==true||errTime>=showLimit)
+    document.getElementById('dv7').innerHTML=thisAns;
+  else if(document.form0.isShowLast.checked==true)
+    document.getElementById('dv7').innerHTML="　　"+thisAns.substring(2,3);
+  else
+    document.getElementById('dv7').innerHTML="　";
+}
+
+function gt(v){
+  if(v==32){
+    return "◎";
+  }
+  if(v==188){
+    return "人";
+  }
+  if(v==190){
+    return "尸";
+  }
+  if(v==186||v==59){
+    return "十";
+  }
+  if(v==191){
+    return "∕";
+  }
+  if(v>64&&v<91){
+    return "一乂廿三３四五六８七八九木手９０１４二５７火２卄６竹".substring(v-65,v-64);
+  }
+  if(v>=48&&v<=57){//數字0~9
+    return "";
+  }
+	//document.getElementById('ds6').innerHTML=v;
+  return "";
+}
+function code(v){
+  if(v==32){
+    return "=";
+  }
+  if(v==188){
+    return ",";
+  }
+  if(v==190){
+    return ".";
+  }
+  if(v==186||v==59){
+    return ";";
+  }
+  if(v==191){
+    return "/";
+  }
+  if(v>64&&v<91){
+    return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".substring(v-65,v-64);
+  }
+  return "";
+}
+function printTime(a){
+	var t=(new Date().getTime()) -timeStart+timeOther;
+  if(document.form0.isTimer.checked==true){
+    //tim++;
+    //document.getElementById('ds5').innerHTML=""+parseInt(tim/600)+":"+(parseInt(tim/10)%60)+"."+(tim%10);
+    if(a)
+    	timeStart=new Date().getTime();
+    else//第一次不要印
+    	document.getElementById('ds5').innerHTML=""+parseInt(t/60000)+":"+addZero(parseInt(t/1000)%60)+"."+parseInt(t/100)%10;
+    
+    tm=setTimeout("printTime()",50);
+  }else{ 
+  	if(a){
+  		timeOther=t;
+	  } if(tm){
+	    clearTimeout(tm);
+	  }
+  }
+}
+function addZero(n,dig){
+	var rt="";
+	if(!dig)
+		dig=2;
+	var len=(""+n).length;
+	for(;len<dig;len++){
+		rt+="0";
+	}
+	return ""+rt+n;
+}
+
+
+function endAll(){
+  document.getElementById('dv2').innerHTML="<font color='red'>停</font>";
+  document.getElementById('dv4').innerHTML="按空白鍵開始";
+  if(tm)
+    clearTimeout(tm);
+  atQus=0;
+}
+
+function init(a){
+  atQus=0;
+  rightAns=0;
+  wrongAns=0;
+  if(a)
+  	hadTimes++;
+  document.getElementById('dv4').innerHTML="　";
+  if(errLimit==-1)
+  	document.getElementById('ds1').innerHTML='0'+' / '+wds.length;
+  document.getElementById('ds6').innerHTML=hadTimes;
+  tim=0;
+  printTime();
+}
+
+function loadThis(){
+  document.onkeydown=prek;
+  wds="踮";
+  ans=";YG";
+  cs="0";
+  document.getElementById('ds1').innerHTML=wds.length;
+  document.getElementById('dv3').innerHTML=wds;
+  setLv(3);
+}
+</script>
+</head>
+<body onload="loadThis()">
+
+<title>六一輸入法：三碼定江山，一字最多三碼，不需再選字</title>
+
+
+
+<body topmargin="1" leftmargin="1" marginwidth="0" marginheight="0">
+<tr height="100%"><td width="120" height="100%" bgcolor="#eeddff" valign="top"><table width="120">
+<tr><td colspan="3">基礎學習
+<!--tr><td width=9>&nbsp;<td width=9>&nbsp;<td><a href='/cai/ch00/ch0001.php'>寫在前面</a>
+<tr><td width=9>&nbsp;<td width=9>&nbsp;<td><a href='/cai/ch00/ch0002.php'>0.8簡介</a-->
+<tr><td width="5">&nbsp;<td width="9">1<td><a href="ch0101.php.htm">0.8簡介</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0102.php.htm">輸入法程式</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0103.php.htm">系統說明</a>
+<tr><td width="5">&nbsp;<td width="9">2<td><a href="ch0201.php.htm">指法說明</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0202.php.htm">鍵位講解</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0203.php.htm">字根說明一</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0204.php.htm">字根說明二</a>
+<tr><td width="5">&nbsp;<td width="9">3<td><a href="ch0301.php.htm">取碼方式</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0302.php.htm">取碼順序</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0303.php.htm">取碼說明</a>
+<tr><td width="5">&nbsp;<td width="9">4<td><a href="ch0401.php.htm">六個代碼一</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0402.php.htm">六個代碼二</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0403.php.htm">六個代碼三</a>
+<tr><td width="5">&nbsp;<td width="9">5<td><a href="ch0501.php.htm">捨碼法則一</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0502.php.htm">捨碼法則二</a>
+<tr><td width="5">&nbsp;<td width="9">&nbsp;<td><a href="ch0503.php.htm">兩碼常用</a></table><td width="92%" valign="top"><table width="100%"><tr><td>
+
+
+
+<table width="652" align="center">
+<form name="form0">
+<tr>
+<td bgcolor="#ffaaee" width="263">已打的字　　<a href="javaScript:setLv(--lvNow)">↓</a><span id="ds0"></span><a href="javaScript:setLv(++lvNow)">↑</a>　　　　<a href="javaScript:endAll()">重測</a>
+<td bgcolor="#eebbff" align="center">現在的字
+<td bgcolor="#ffffaa" width="263">未打的字
+　<a href="exam.php.c.8d.htm">上一組(F8)</a>　<span style="align:right"><a href="exam.php.c.8f.htm">下一組(F9)</a></span><tr>
+<td width="263" height="182" valign="top" rowspan="3" bgcolor="#bbffee"><div id="dv1" style="width:261;height:180;overflow:auto"></div>
+<td width="128" id="tdv2" align="center"><span id="dv2" align="center" style="font-size:72pt;font-family:標楷體">測</span>
+<td width="263" height="280" valign="top" rowspan="8" bgcolor="#aaffdd"><div id="dv3" style="width:261;height:278;overflow:auto"></div>
+<tr>
+<td bgcolor="#eebbff" height="22"><span id="dv4">按空白鍵開始</span>
+<tr>
+<td><input type="checkbox" name="isShowAns" onclick="showAns()">碼：<span id="dv7"></span>
+<tr><td bgcolor="#eebbff" height="22">打錯的字　　　　　　　　<a href="javaScript:eval(document.getElementById('dv9').innerHTML='')">清除(F12)</a>
+<td><input type="checkbox" name="isShowLast" onclick="showAns()">顯示補碼</tr>
+<tr>
+<td width="263" height="50" valign="top" rowspan="4" bgcolor="#bbffee"><div id="dv9" style="width:261;height:100px;overflow:auto"></div>
+<td><input type="checkbox" name="isTimer" checked onclick="if(atQus>0)printTime(1)">時：<span id="ds5"> 0:00.0</span>
+<tr><td>打錯：&nbsp;<span id="ds3">0</span>
+<tr><td>字數：&nbsp;<span id="ds1">9</span>
+<tr><td>次數：&nbsp;<span id="ds6">0</span></td></tr>
+</form>
+
+</table>
+
+</table>
+</body>
+</html>
+
+
