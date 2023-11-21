@@ -10,3 +10,4 @@ filename=$1
 python3 web4.py "$filename"
 python3 jpg1.py "$filename"
 python3 php1.py "$filename"
+python3 java1.py "$filename"
