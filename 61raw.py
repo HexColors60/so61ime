@@ -82,7 +82,7 @@ if start_pos is not None and end_pos is not None:
     # Convert each chunk from Big5 or ASCII to UTF-8 and display 30 words per line
     for chunk in work_buffer:
         hex_chunk = chunk.hex()
-        utf8_text = chunk.decode('big5', errors='ignore')
+        utf8_text = chunk.decode('big5hkscs', errors='ignore')
         
         if all(c.isascii() or c.isspace() for c in utf8_text):
             print("ascii")
