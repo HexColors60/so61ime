@@ -12,9 +12,20 @@ XTABLE4 = "中乙貝心彎女刀日月口一二三四五六土八九十竹草散
 # color_table = "030000003003000000300003003000"
 # xcolor_table = "000000000000000000000000000000"
 xcolor_table = "0000000000000000000000000000000000000000"
+xcolor_table6 = "0000000000001000010001000111000000000000"
 
 # Define the positions where the default green color should be applied
 xgreen_positions = [3, 6, 13, 16, 23, 26]  # Updated to start from 1
+# xgreen_positions6 = [3, 6, 13, 16, 23, 26]  # Updated to start from 1
+xgreen_positions6 = [2, 6, 7, 8, 11, 15]  # Updated to start from 1
+
+
+# Color Code 0: No color (default)
+# Color Code 1: Red text
+# Color Code 2: Yellow text
+# Color Code 3: Red text (again, it's the same as Color Code 1 in your provided code)
+# Color Code 4: Blue text
+# Color Code 5: Cyan text
 
 # Function to apply colors to the word table
 def xapply_colors(word_table, color_table, green_positions):
@@ -25,7 +36,7 @@ def xapply_colors(word_table, color_table, green_positions):
         colored_line = ""
         for j, char in enumerate(word_line):
             color_code = int(color_line[j])
-            if j in green_positions and color_code == 0:
+            if (j + i) in green_positions and color_code == 0:
                 colored_line += "\033[32m" + char + "\033[0m"
             elif color_code == 0:
                 colored_line += char
@@ -48,14 +59,22 @@ def xwork(xword_table):
     for line in colored_lines[:3]:  # Print the first 3 lines
         print(line)
     print(f"")  
+
+def xwork6(xword_table):
+    colored_lines = xapply_colors(xword_table, xcolor_table6, xgreen_positions6)
+    for line in colored_lines[:3]:  # Print the first 3 lines
+        print(line)
+    print(f"")  
     
 def show_roots():
     print(f"https://hexcolors60.github.io/so61ime/ch0202.php.htm")
     xwork(TABLE2)
     xwork(TABLE3)
     xwork(TABLE4)
-
-
+    xwork6(TABLE3) # Six code
+    print("二為卄的代碼、３為三的代碼、六為手的代碼、")
+    print("７為木的代碼、８為八的代碼、９為人的代碼\n")
+    
 # Test script for phrase.
 import sys
 import termios
@@ -102,6 +121,11 @@ for line in lines:
 #    print("EOF reached. Exiting.")
 #    exit()
 
+# pip install opencc-python-reimplemented
+import opencc
+
+# converter = opencc.OpenCC('s2t.json')
+
 # Process the input string and replace characters with TABLE keys
 def show_str(input_str):
     output_str = ""
@@ -109,8 +133,14 @@ def show_str(input_str):
         if char in table_dict:
             output_str += char + " " + " ".join(table_dict[char]) # + "\n"
         else:
-            output_str += char + " (No TABLE key)\n"
-
+            # output_str += char + " (No TABLE key)\n"
+            converter = opencc.OpenCC('s2t')
+            char2 = converter.convert(char)
+            if char2 in table_dict:
+                output_str += char2 + " " + " ".join(table_dict[char2])
+            else:
+                output_str += char + " (No TABLE key)\n"
+                 
     # Print the output
     print(output_str)
     return output_str
@@ -350,7 +380,7 @@ def apply_colors(word_table, color_table, green_positions):
         colored_line = ""
         for j, char in enumerate(word_line):
             color_code = int(color_line[j])
-            if j in green_positions and color_code == 0:
+            if (j+i) in green_positions and color_code == 0:
                 colored_line += "\033[32m" + char + "\033[0m"
             elif color_code == 0:
                 colored_line += char
