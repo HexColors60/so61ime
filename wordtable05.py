@@ -266,7 +266,7 @@ def build_ab_dict_tmp(key, value):
     if now in tmp_ab_dict[key]:
         temp = tmp_ab_dict[key][now]
         tmp_ab_dict[key][now] = value
-        print(f"Debug: {key} {now} => {value} {temp}")
+        # print(f"Debug: {key} {now} => {value} {temp}")
         tmp_ab_dict[key][next_number] = temp
     else:
         tmp_ab_dict[key][now] = value
@@ -588,5 +588,36 @@ def do_work():
 
     termios.tcsetattr(sys.stdin, termios.TCSANOW, oldt)  # Restore the terminal settings
 
+# def show_table_dict():
+#    for key, values in table_dict.items():
+#        print(f"{key}: {values}")
+
+def show_table_dict():
+    for word, keys in table_dict.items():
+        if word != "﹏":  # Skip the word "﹏"
+            for key in keys:
+                # color_code = color_dict.get(key, "0")  # Get the color code from color_dict, default to "0"
+                color_code = "0"
+                # key2 = key.replace('_', '')  
+                key2 = key[0:2]
+                if key2 in color_dict:
+                    color_char = key[2:3]
+                    color_index = TABLE.find(color_char)
+                    color_table = color_dict[key2]
+                    color_code = color_table[color_index:color_index+1]
+                else:
+                    color_table = ""
+                    color_code =  "0"
+                # print(f"{color_table} ")
+                # color_code = "0"
+                # Check if color_code is not a digit, set it to "0"
+                if not color_code.isdigit():
+                    color_code = "0"
+                key = key.lower()
+                print(f"{word} {color_code} {key}")
+
+# Call the function to display the contents of table_dict
+show_table_dict()
+
 # Call the do_work function to start reading and processing input keys
-do_work()
+# do_work()
