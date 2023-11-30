@@ -598,21 +598,35 @@ def show_table_dict():
             for key in keys:
                 # color_code = color_dict.get(key, "0")  # Get the color code from color_dict, default to "0"
                 color_code = "0"
+                color_index = 0
                 # key2 = key.replace('_', '')  
                 key2 = key[0:2]
-                if key2 in color_dict:
+                key3 = key2.replace('_', '')
+                # if key2 in color_dict:
+                if key3 in color_dict:
                     color_char = key[2:3]
                     color_index = TABLE.find(color_char)
-                    color_table = color_dict[key2]
-                    color_code = color_table[color_index:color_index+1]
+                    # color_table = color_dict[key2]
+                    if color_index != 30:
+                        color_table = color_dict[key3]
+                        color_code = color_table[color_index:color_index+1]
+                    else:
+                        key4 = key3[:-1]
+                        color_table = color_dict[key4]
+                        color_char2 = key3[-1]
+                        color_index2 = TABLE.find(color_char2)
+                        color_code = color_table[color_index2:color_index2+1]
+                        # # print(f"{word} debug color {color_code} {key2} {color_index} {color_index2} {key4} ")
                 else:
                     color_table = ""
                     color_code =  "0"
+                    print(f"{word} no color {key2}")
                 # print(f"{color_table} ")
                 # color_code = "0"
                 # Check if color_code is not a digit, set it to "0"
                 if not color_code.isdigit():
                     color_code = "0"
+                    print(f"{word} force color 0 {key2} {color_index}")
                 key = key.lower()
                 print(f"{word} {color_code} {key}")
 
