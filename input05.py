@@ -348,6 +348,48 @@ def lookup_ab_dict(key, next_number):
         # return f"Key {key} not found in ab_dict"
         return False
 
+def show_ab_dict(key, match_number):
+    match_len = 0
+    next_number = 0
+    # Check if the key exists in ab_dict
+    tmp, now = "", 0
+    for char in key:
+        if char.isdigit():
+            now = now * 10 + int(char)
+        else:
+            tmp += char
+
+    key = tmp  # Update the key to exclude the numeric part
+    if now != 0:
+        next_number = now
+    
+    if next_number == 0:
+        tmp_ab_buffer = ""
+        # return False
+    if key in ab_dict:
+        # if next_number in ab_dict[key]:
+        for next_number in ab_dict[key]:
+            # return ab_dict[key][next_number]
+            # print(f"ab_dict {key} {next_number} {ab_dict[key][next_number]}")
+            if int(next_number) != 0:
+                print(f"Phrase {key} {next_number} {ab_dict[key][next_number]}")
+            # tmp_ab_buffer = ab_dict[key][next_number]
+            # return True
+        #    return tmp_ab_buffer
+        # else:
+            # return f"Next number {next_number} not found for key {key}"
+        #    return False
+        match_len = len(str(match_number))
+        if match_len != 0:
+            print(f"debug show_ab_dict {key} {match_len}")
+            return len(key) + match_len
+        else:
+            return len(key)
+    else:
+        return 0
+        # return f"Key {key} not found in ab_dict"
+    #    return False
+
 def read_key():
     key = None
     oldt = termios.tcgetattr(sys.stdin)
@@ -499,6 +541,56 @@ def process_input_buffer(input_buffer, output_buffer):
     print(f"Current Input Key: {input_buffer}")
     print(f"Output String: {output_table_keys}")
     return output_table_keys
+
+def show_phrase(input_buffer, output_buffer):
+    # Split input_buffer into 3-key pairs and perform the TABLE search
+    output_table_keys = ""
+    phrase_len = 0
+    
+    # ab_buffer = input_buffer.replace('_', '').upper()
+    # if ab_buffer in ab_dict:
+    #     output_table_keys += ab_dict[ab_buffer]
+    # else:    
+    offset = 0
+    for i in range(0, len(input_buffer), 3):
+        print(f"debug show_phrase {i} {offset} {input_buffer[i + offset:].replace('_', '').upper()}")
+        ab_buffer, number = extract_ab_and_number(input_buffer[i + offset:].replace('_', '').upper())
+        # ab_buffer = input_buffer.replace('_', '').upper()
+        # if ab_buffer in ab_dict:
+        # tmp = lookup_ab_dict(ab_buffer, number)
+        phrase_len = show_ab_dict(ab_buffer, number)
+        if phrase_len:
+            # output_table_keys += tmp_ab_buffer # Not ab_dict[ab_buffer]
+            # output_table_keys += phrase_len
+            # print(f"Output String: {output_table_keys}")
+            # input_buffer = ""
+            # if number:
+            #    offset += len(ab_buffer) + len(str(number))
+            # else:
+            #   offset += len(ab_buffer)
+            offset += phrase_len - 3
+
+        # if number:
+        #    tmp_key = input_buffer[i:].replace(ab_buffer + str(number), "");
+        # else:
+        #    tmp_key = input_buffer[i:].replace(ab_buffer, "");
+        else:
+            current_key = input_buffer[i + offset:i+offset+3]
+        # tmp_key = xxx
+            while len(current_key) < 3:
+                current_key += "_"
+            current_key = current_key.upper()
+        # if current_key in table1_dict:
+        #    output_table_keys += table1_dict[current_key]
+            # output_table_keys += so61utf8_dict[current_key]
+
+    # output_buffer += output_table_keys
+
+    # print(f"Input Buffer: {input_buffer.replace(' ', '_')}")
+    # print(f"Output Buffer: {output_buffer.replace(' ', '_')}")
+    # print(f"Current Input Key: {input_buffer}")
+    # print(f"Output String: {output_table_keys}")
+    return output_table_keys
     
 def clear_outstr():
     # Define your clear_outstr function if needed
@@ -581,6 +673,7 @@ def do_work():
                 input_buffer += key
                 # output_buffer += key
                 prompt_buffer += key
+                show_phrase(input_buffer, output_buffer)
                 # show_dict(prompt_buffer, ab_dict)
                 show_dict(prompt_buffer, prompt_dict)
 
