@@ -383,7 +383,7 @@ def show_ab_dict(key, match_number):
         #    return False
         match_len = len(str(match_number))
         if match_len != 0:
-            print(f"debug show_ab_dict {key} {match_len}")
+            ##### print(f"debug show_ab_dict {key} {match_len}")
             return len(key) + match_len
         else:
             return len(key)
@@ -555,13 +555,13 @@ def show_phrase(input_buffer, output_buffer):
     # else:    
     offset = 0
     for i in range(0, len(input_buffer), 3):
-        print(f"debug show_phrase {i} {offset} {input_buffer[i + offset:].replace('_', '').upper()}")
+        ##### print(f"debug show_phrase {i} {offset} {input_buffer[i + offset:].replace('_', '').upper()}")
         ab_buffer, number = extract_ab_and_number(input_buffer[i + offset:].replace('_', '').upper())
         # ab_buffer = input_buffer.replace('_', '').upper()
         # if ab_buffer in ab_dict:
         # tmp = lookup_ab_dict(ab_buffer, number)
         phrase_len = show_ab_dict(ab_buffer, number)
-        print(f"debug show_phrase phrase_len {phrase_len}")
+        ##### print(f"debug show_phrase phrase_len {phrase_len}")
         if phrase_len != 0:
             # output_table_keys += tmp_ab_buffer # Not ab_dict[ab_buffer]
             # output_table_keys += phrase_len
@@ -571,8 +571,10 @@ def show_phrase(input_buffer, output_buffer):
             #    offset += len(ab_buffer) + len(str(number))
             # else:
             #   offset += len(ab_buffer)
+            current_key = input_buffer[i + offset:i+offset+3]
+            current_key = current_key.upper()
+            show_dict(current_key, prompt_dict)
             offset += phrase_len - 3
-
         # if number:
         #    tmp_key = input_buffer[i:].replace(ab_buffer + str(number), "");
         # else:
@@ -590,11 +592,13 @@ def show_phrase(input_buffer, output_buffer):
                 if current_key in table1_dict:
                     print(f"Word {current_key} {table1_dict[current_key]} offset {offset}")
             else:
-                print(f"debug not 3 keys {i} {offset} {current_key}")
+                #####  print(f"debug not 3 keys {i} {offset} {current_key}")
+                debugdebug = 0;
         # if current_key in table1_dict:
         #    output_table_keys += table1_dict[current_key]
             # output_table_keys += so61utf8_dict[current_key]
-    print(f"debug left i {i} offset {offset} current_key {current_key}")
+    ##### print(f"debug left i {i} offset {offset} current_key {current_key}")
+    # return ""
     if offset < 0:
         current_key = input_buffer[offset]
         show_dict(current_key, prompt_dict)
