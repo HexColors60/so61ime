@@ -1,4 +1,6 @@
 
+# word_table = ""
+
 # test_color5.py
 # The sixone root characters with color
 # Define the word table
@@ -559,7 +561,8 @@ def show_phrase(input_buffer, output_buffer):
         # if ab_buffer in ab_dict:
         # tmp = lookup_ab_dict(ab_buffer, number)
         phrase_len = show_ab_dict(ab_buffer, number)
-        if phrase_len:
+        print(f"debug show_phrase phrase_len {phrase_len}")
+        if phrase_len != 0:
             # output_table_keys += tmp_ab_buffer # Not ab_dict[ab_buffer]
             # output_table_keys += phrase_len
             # print(f"Output String: {output_table_keys}")
@@ -577,13 +580,35 @@ def show_phrase(input_buffer, output_buffer):
         else:
             current_key = input_buffer[i + offset:i+offset+3]
         # tmp_key = xxx
-            while len(current_key) < 3:
-                current_key += "_"
+            # while len(current_key) < 3:
+            #    current_key += "_"
+            # current_key = current_key.upper()
             current_key = current_key.upper()
+            show_dict(current_key, prompt_dict)
+            if (len(current_key)) == 3:
+                # print(f"debug left keys {i} {offset} {current_key}")
+                if current_key in table1_dict:
+                    print(f"Word {current_key} {table1_dict[current_key]}")
+            else:
+                print(f"debug not 3 keys {i} {offset} {current_key}")
         # if current_key in table1_dict:
         #    output_table_keys += table1_dict[current_key]
             # output_table_keys += so61utf8_dict[current_key]
 
+
+    current_key = input_buffer[i + offset:i+offset+3]
+    # current_key = input_buffer[i + offset + 3:i+offset+3 + 3]
+    print(f"debug left keys {i} {offset} {current_key}")
+    # while len(current_key) < 3:
+    #    current_key += "_"
+    # current_key = current_key.upper()
+    current_key = current_key.upper()
+    show_dict(current_key, prompt_dict)
+    if (len(current_key)) == 3:
+        if current_key in table1_dict:
+            print(f"Word {current_key} {table1_dict[current_key]}")
+
+    # print(f"Word {word_table}")
     # output_buffer += output_table_keys
 
     # print(f"Input Buffer: {input_buffer.replace(' ', '_')}")
@@ -675,7 +700,7 @@ def do_work():
                 prompt_buffer += key
                 show_phrase(input_buffer, output_buffer)
                 # show_dict(prompt_buffer, ab_dict)
-                show_dict(prompt_buffer, prompt_dict)
+                ## show_dict(prompt_buffer, prompt_dict)
 
         prompt_keys(input_buffer)  # Call the prompt_keys function for each input key
 
