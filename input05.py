@@ -548,7 +548,7 @@ def show_phrase(input_buffer, output_buffer):
     # Split input_buffer into 3-key pairs and perform the TABLE search
     output_table_keys = ""
     phrase_len = 0
-    
+    current_key = ""    
     # ab_buffer = input_buffer.replace('_', '').upper()
     # if ab_buffer in ab_dict:
     #     output_table_keys += ab_dict[ab_buffer]
@@ -588,14 +588,17 @@ def show_phrase(input_buffer, output_buffer):
             if (len(current_key)) == 3:
                 # print(f"debug left keys {i} {offset} {current_key}")
                 if current_key in table1_dict:
-                    print(f"Word {current_key} {table1_dict[current_key]}")
+                    print(f"Word {current_key} {table1_dict[current_key]} offset {offset}")
             else:
                 print(f"debug not 3 keys {i} {offset} {current_key}")
         # if current_key in table1_dict:
         #    output_table_keys += table1_dict[current_key]
             # output_table_keys += so61utf8_dict[current_key]
-
-
+    print(f"debug left i {i} offset {offset} current_key {current_key}")
+    if offset < 0:
+        current_key = input_buffer[offset]
+        show_dict(current_key, prompt_dict)
+    return ""
     current_key = input_buffer[i + offset:i+offset+3]
     # current_key = input_buffer[i + offset + 3:i+offset+3 + 3]
     print(f"debug left keys {i} {offset} {current_key}")
@@ -606,7 +609,7 @@ def show_phrase(input_buffer, output_buffer):
     show_dict(current_key, prompt_dict)
     if (len(current_key)) == 3:
         if current_key in table1_dict:
-            print(f"Word {current_key} {table1_dict[current_key]}")
+            print(f"debug Word {current_key} {table1_dict[current_key]}")
 
     # print(f"Word {word_table}")
     # output_buffer += output_table_keys
