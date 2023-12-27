@@ -1,0 +1,2 @@
+
+ python cintable05.py  > docs/so61.cin

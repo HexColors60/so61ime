@@ -631,7 +631,65 @@ def show_table_dict():
                 print(f"{word} {color_code} {key}")
 
 # Call the function to display the contents of table_dict
-show_table_dict()
+# show_table_dict()
 
+def show_cin():
+    print("%ename so61:en;so61:zh_CN;so61:zh;")
+    print("%cname 六一")
+    print("%selkey 1234567890")
+    print("%keyname begin")
+
+    for i in range(30):
+        table_char = TABLE[i % len(TABLE)]
+        table4_char = TABLE4[i % len(TABLE4)]
+        print(f"{table_char}\t{table4_char}")
+
+    print("%keyname end")
+    print("%chardef begin")
+    for i in range(1, 10):
+        print(f"{i}\t{i}")
+    print("0\t0")
+    for word, keys in table_dict.items():
+        if word != "﹏":  # Skip the word "﹏"
+            for key in keys:
+                # color_code = color_dict.get(key, "0")  # Get the color code from color_dict, default to "0"
+                color_code = "0"
+                color_index = 0
+                # key2 = key.replace('_', '')  
+                key2 = key[0:2]
+                key3 = key2.replace('_', '')
+                # if key2 in color_dict:
+                if key3 in color_dict:
+                    color_char = key[2:3]
+                    color_index = TABLE.find(color_char)
+                    # color_table = color_dict[key2]
+                    if color_index != 30:
+                        color_table = color_dict[key3]
+                        color_code = color_table[color_index:color_index+1]
+                    else:
+                        key4 = key3[:-1]
+                        color_table = color_dict[key4]
+                        color_char2 = key3[-1]
+                        color_index2 = TABLE.find(color_char2)
+                        color_code = color_table[color_index2:color_index2+1]
+                        # # print(f"{word} debug color {color_code} {key2} {color_index} {color_index2} {key4} ")
+                else:
+                    color_table = ""
+                    color_code =  "0"
+                    print(f"{word} no color {key2}")
+                # print(f"{color_table} ")
+                # color_code = "0"
+                # Check if color_code is not a digit, set it to "0"
+                if not color_code.isdigit():
+                    color_code = "0"
+                    print(f"{word} force color 0 {key2} {color_index}")
+                key = key.lower()
+                # print(f"{word} {color_code} {key}")
+    
+                print(f"{key}\t{word}")
+    print("%chardef end")
+
+
+show_cin()
 # Call the do_work function to start reading and processing input keys
 # do_work()
