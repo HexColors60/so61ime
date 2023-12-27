@@ -633,7 +633,11 @@ def show_table_dict():
 # Call the function to display the contents of table_dict
 # show_table_dict()
 
+import datetime
+
 def show_cin():
+    current_date = datetime.date.today().strftime("%Y-%m-%d")
+    print(f"# Version {current_date}")
     print("%ename so61:en;so61:zh_CN;so61:zh;")
     print("%cname 六一")
     print("%selkey 1234567890")
