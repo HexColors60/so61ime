@@ -644,7 +644,7 @@ def show_cin():
     print("%keyname begin")
 
     for i in range(30):
-        table_char = TABLE[i % len(TABLE)]
+        table_char = (TABLE[i % len(TABLE)]).lower()
         table4_char = TABLE4[i % len(TABLE4)]
         print(f"{table_char}\t{table4_char}")
 
