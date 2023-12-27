@@ -685,7 +685,7 @@ def show_cin():
                     print(f"{word} force color 0 {key2} {color_index}")
                 key = key.lower()
                 # print(f"{word} {color_code} {key}")
-    
+                key = key.replace('_', '')
                 print(f"{key}\t{word}")
     print("%chardef end")
 
