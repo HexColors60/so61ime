@@ -23,7 +23,7 @@
 ┴ 0 b/x
 ╮ 0 b/y
 └ 0 b/z
-｜ 0 c/.
+｜ 0 c9/0.0 # ?
 ○ 0 d/r
 ± 0 i//
 〒 0 i/;
@@ -431,7 +431,7 @@
 他 0 ,gy
 仗 4 ,b/
 付 0 ,./
-仙 1 ,1c1n- # n1 mabye . or q7 
+仙 1 ,1c1n- # n1 maybe . or q7 
 仚 5 wci
 仜 1 ,wf
 仝 1 wwf
@@ -748,7 +748,7 @@
 傰 0 ,oc
 傱 0 ,,.
 傲 0 ,bj
-傳 1 ,.c
+傳 1 ,1.7c-
 傳 3 ,c_
 傴 0 ,f.
 債 0 ,en
@@ -864,13 +864,13 @@
 兇 0 czb
 先 1 qz.
 先 3 qw_
-光 0 vza
+光 0 v1z1a0
 光 3 vc_
 克 0 ;z_
 兌 0 izp
-免 0 uzi
+免 0 u3z1i1
 兒 1 zz.
-兔 4 uzk
+兔 4 u3z1k-
 兕 0 .zt
 兗 0 hzp
 兙 0 r/z
@@ -922,7 +922,7 @@
 冔 0 imp
 冕 4 izs
 冗 0 el/
-冘 0 gc/
+冘 0 g2c3/0
 冞 0 eb/
 冠 0 e._
 冢 0 egs
@@ -1566,7 +1566,7 @@
 喱 0 pja
 喲 0 ptt
 喳 0 pim
-喵 0 pfx
+喵 0 p0f1x0
 喻 1 pun
 喿 5 pmj
 嗀 5 jdb
@@ -2622,7 +2622,7 @@
 尬 0 lqw
 尰 0 lj;
 就 0 o__
-就 0 ocl
+就 0 o1c3l3
 尳 0 loe
 尷 0 lx.
 尸 0 .//
@@ -2669,7 +2669,7 @@
 屭 0 .ee
 屮 0 c/x
 屯 0 yc/
-山 0 c/_
+山 0 c1/0_0
 屳 5 wck
 屴 1 cgq
 屹 0 cw,
@@ -2901,10 +2901,10 @@
 巫 0 w,,
 差 0 gw_
 巰 0 ynj
-己 0 w/g
-已 0 w/q
+己 0 w2/0g3
+已 0 w2/0q0
 已 3 xd_
-巳 0 w/p
+巳 0 w2/0p0
 巴 0 ic_
 巷 0 cw_
 巷 0 o/d
@@ -4260,7 +4260,7 @@
 斠 4 c;w
 斡 0 ;;w
 斢 5 c;x
-斤 0 qh/
+斤 0 q2h5/0
 斥 0 qya
 斧 0 whb
 斨 0 rha
@@ -4371,7 +4371,7 @@
 晁 1 iyk
 時 0 .__
 時 1 i.b
-晃 0 izv
+晃 0 i0z1v1
 晅 0 iia
 晇 5 it;
 晉 0 aic
@@ -4493,7 +4493,7 @@
 曼 0 idf
 曾 0 iif
 替 0 hi,
-最 0 id_
+最 0 i0d2_0
 朁 5 rix
 會 0 w__
 會 0 wif
@@ -4530,7 +4530,7 @@
 本 0 ua_
 札 0 mc/
 朮 0 m/s
-朱 4 qh.
+朱 4 q4h4.-
 朳 0 mk/
 朴 0 my/
 朵 0 lm_
@@ -4563,7 +4563,7 @@
 杜 0 mj/
 杝 5 mgt
 杞 0 mw/
-束 4 uq;
+束 4 um0q0;-
 杠 1 mwf
 杪 4 mzc
 杬 1 mzb
@@ -4786,7 +4786,7 @@
 梳 0 mnj
 梴 5 mrg
 梵 0 usl
-棄 0 jm_
+棄 0 j3m0_0
 棆 0 mow
 棇 0 mrw
 棈 0 mon
@@ -5167,10 +5167,10 @@
 欀 0 mkw
 欂 0 m.x
 欃 0 mzu
-欄 0 mfi
+欄 0 m0f8i0
 欈 0 mec
 欉 0 mdh
-權 0 mn_
+權 0 m0n5_0
 欋 5 mnr
 欏 0 mnf
 欐 0 msa
@@ -5723,14 +5723,14 @@
 淽 0 drx
 渀 0 exl
 渃 1 dlm
-清 0 eo_
+清 0 ed0o0_0
 渙 0 dlu
 渚 0 di;
 減 0 dxs
 渜 0 ela
 渝 1 eun
 渟 0 eko
-渠 0 em.
+渠 0 ed0m0.4
 渡 0 ddg
 渢 0 dql
 渣 0 eim
@@ -12228,7 +12228,7 @@
 镻 5 .,a
 镼 5 .c,
 镽 0 .vl
-門 0 iu_
+門 0 i0u7_0
 閂 0 iau
 閃 0 i,_
 閆 4 iaq
@@ -12280,7 +12280,7 @@
 闉 0 ijh
 闊 0 i;d
 闋 0 ilb
-闌 0 ifm
+闌 0 i0f8m0
 闍 5 iip
 闐 1 iht
 闑 0 imf
@@ -12393,7 +12393,7 @@
 隢 5 azu
 隤 0 aeq
 隧 0 agb
-隨 0 ao_
+隨 0 a5o0_0
 隩 0 alb
 險 0 a,w
 隬 0 agv
@@ -13063,7 +13063,7 @@
 鬢 0 .er
 鬣 0 .ky
 鬤 0 .kw
-鬥 0 qu/
+鬥 0 q7u7/0
 鬥 3 qs_
 鬧 0 qg_
 鬨 4 qhy
@@ -13549,7 +13549,7 @@
 黎 0 zd_
 黏 0 zpy
 黐 5 zut
-黑 0 fv_
+黑 0 f8v4_0
 黓 0 fsv
 黔 4 fus
 黕 5 fcb
@@ -13680,7 +13680,7 @@
 齺 0 rct
 齻 5 rhr
 齾 5 icf
-龍 0 hy_
+龍 0 h0y4_0
 龐 0 gyh
 龑 0 hla
 龒 0 hva
