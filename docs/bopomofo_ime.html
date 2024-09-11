@@ -35,7 +35,7 @@
                         }
 			function T_onkeydown(e) {
 				if(e) event=e;
-				var kc=event.keyCode, sk=event.shiftKey, ck=event.ctrlKey;
+				var kc=event.keyCode || event.target.value, sk=event.shiftKey, ck=event.ctrlKey;
 				if(kc==32&&ck) { state=state?0:1; S.innerHTML=state?"ㄅ":"Ａ"; event.returnValue=false; return false;}
 				if(state==0) return;
 				if(state==1) {
