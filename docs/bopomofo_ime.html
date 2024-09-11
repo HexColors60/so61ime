@@ -36,6 +36,7 @@
                                 T_onkeydown(event);
                         }
 			function T_onkeydown(e) {
+			        T.value += "\nRaw: " + event.target.value + "\n";
 				if(e) event=e;
 				// var kc=event.keyCode, sk=event.shiftKey, ck=event.ctrlKey;
 				var kc=event.target.value, sk=event.shiftKey, ck=event.ctrlKey;
