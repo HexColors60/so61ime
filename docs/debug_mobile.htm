@@ -60,21 +60,23 @@
         }
     });
 
-    // Input event for converting number and displaying in text area
-    inputArea.addEventListener('input', function(event) {
-        const input = event.data;  // event.data is reliable on mobile for input value
-        if (input in armyFormat) {
+    // Keydown event for converting number and displaying in text area
+    inputArea.addEventListener('keydown', function(event) {
+        const input = event.key;
+
+        if (input >= '0' && input <= '9') {
             const converted = armyFormat[input];
             let output = converted;
 
             if (hintMode === 'D') {
-                output += ` (KeyCode: ${input.charCodeAt(0) || event.inputType})`;
+                output += ` (KeyCode: ${event.keyCode})`;
             }
 
             outputArea.value = output;
+
+            // Prevent the number from being entered in the input field
+            event.preventDefault();
         }
-        // Clear input after handling
-        inputArea.value = '';
     });
 
     // Toggle between N and D on hint button click
