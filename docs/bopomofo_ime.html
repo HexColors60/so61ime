@@ -31,6 +31,7 @@
 
                         // Added input event listener for better mobile support
                         function T_oninput(e) {
+				if(e) event=e;
                                 event.keyCode = event.target.value;
                                 T_onkeydown(e);
                         }
