@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number to zh-tw Army Format Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #output {
+            width: 100%;
+            height: 100px;
+        }
+        #inputArea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #hintBtn {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>數字轉換為軍用格式</h1>
+
+<textarea id="output" readonly></textarea><br><br>
+
+<input type="text" id="inputArea" placeholder="輸入數字..." maxlength="1"><br><br>
+
+<button id="hintBtn">N</button><br><br>
+
+<script>
+    const armyFormat = {
+        '0': '零',
+        '1': '壹',
+        '2': '貳',
+        '3': '參',
+        '4': '肆',
+        '5': '伍',
+        '6': '陸',
+        '7': '柒',
+        '8': '捌',
+        '9': '玖'
+    };
+
+    const outputArea = document.getElementById('output');
+    const inputArea = document.getElementById('inputArea');
+    const hintBtn = document.getElementById('hintBtn');
+    let hintMode = 'N';
+
+    // Toggle Hint Mode with backtick (`) key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === '`') {
+            toggleHintMode();
+        }
+    });
+
+    // Input event for converting number and displaying in text area
+    inputArea.addEventListener('input', function(event) {
+        const input = event.target.value;
+        if (input in armyFormat) {
+            const converted = armyFormat[input];
+            let output = converted;
+
+            if (hintMode === 'D') {
+                output += ` (KeyCode: ${event.inputType === 'insertText' ? input.charCodeAt(0) : ''})`;
+            }
+
+            outputArea.value = output;
+        }
+        // Clear input after handling
+        inputArea.value = '';
+    });
+
+    // Toggle between N and D on hint button click
+    hintBtn.addEventListener('click', function() {
+        toggleHintMode();
+    });
+
+    function toggleHintMode() {
+        hintMode = hintMode === 'N' ? 'D' : 'N';
+        hintBtn.textContent = hintMode;
+    }
+</script>
+
+</body>
+</html>
