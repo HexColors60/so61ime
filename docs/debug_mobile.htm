@@ -62,13 +62,13 @@
 
     // Input event for converting number and displaying in text area
     inputArea.addEventListener('input', function(event) {
-        const input = event.target.value;
+        const input = event.data;  // event.data is reliable on mobile for input value
         if (input in armyFormat) {
             const converted = armyFormat[input];
             let output = converted;
 
             if (hintMode === 'D') {
-                output += ` (KeyCode: ${event.inputType === 'insertText' ? input.charCodeAt(0) : ''})`;
+                output += ` (KeyCode: ${input.charCodeAt(0) || event.inputType})`;
             }
 
             outputArea.value = output;
