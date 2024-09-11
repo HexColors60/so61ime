@@ -33,7 +33,7 @@
                         function T_oninput(e) {
 				if(e) event=e;
                                 event.keyCode = event.target.value;
-                                T_onkeydown(e);
+                                T_onkeydown(event);
                         }
 			function T_onkeydown(e) {
 				if(e) event=e;
