@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So61 ZHTW Input Method Editor (IME)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .input-section label {
+            display: block;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #inputCode {
+            width: 100%;
+            font-size: 1.5em;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-family: monospace;
+            background: #f8f9ff;
+            transition: all 0.3s;
+        }
+
+        #inputCode:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+        }
+
+        #outputArea {
+            width: 100%;
+            min-height: 150px;
+            font-size: 1.5em;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            background: #f8f9ff;
+            resize: vertical;
+        }
+
+        #outputArea:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.1);
+        }
+
+        .candidate-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            min-height: 60px;
+        }
+
+        .candidate-section label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        #candidateList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .candidate-item {
+            padding: 8px 15px;
+            background: white;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.2em;
+        }
+
+        .candidate-item:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .keyboard-section {
+            margin-top: 30px;
+        }
+
+        .keyboard-section h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .keyboard-layout {
+            margin: 20px 0;
+        }
+
+        .keyboard-layout h3 {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+
+        .keyboard-layout table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: white;
+        }
+
+        .keyboard-layout td {
+            border: 2px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 1.1em;
+            transition: background 0.2s;
+        }
+
+        .keyboard-layout td:hover {
+            background: #f0f4ff;
+        }
+
+        .keyboard-layout .highlight {
+            background-color: #ddffdd;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: #856404;
+        }
+
+        .instructions ul {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin: 5px 0;
+            color: #856404;
+        }
+
+        .debug-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .debug-section h3 {
+            margin-bottom: 10px;
+        }
+
+        #debugInfo {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔤 So61 ZHTW 輸入法</h1>
+            <p>Traditional Chinese Input Method Editor</p>
+        </div>
+
+        <div class="main-content">
+            <div class="instructions">
+                <h3>使用說明 (Instructions):</h3>
+                <ul>
+                    <li>在下方輸入框中輸入英文字母代碼 (Type English letter codes in the input box below)</li>
+                    <li>系統會自動顯示候選字詞 (The system will automatically display candidate characters)</li>
+                    <li>點擊候選字即可插入到輸出區域 (Click on a candidate to insert it into the output area)</li>
+                    <li>按下空格鍵選擇第一個候選字 (Press Space to select the first candidate)</li>
+                    <li>按下 Backspace 刪除代碼 (Press Backspace to delete code)</li>
+                </ul>
+            </div>
+
+            <div class="input-section">
+                <label for="inputCode">輸入代碼 (Input Code):</label>
+                <input type="text" id="inputCode" placeholder="請輸入代碼... (Type code here...)" autofocus>
+            </div>
+
+            <div class="candidate-section">
+                <label>候選字詞 (Candidates):</label>
+                <div id="candidateList"></div>
+            </div>
+
+            <div class="input-section">
+                <label for="outputArea">輸出文字 (Output Text):</label>
+                <textarea id="outputArea" placeholder="選擇的文字將顯示在這裡... (Selected text will appear here...)"></textarea>
+            </div>
+
+            <div class="debug-section">
+                <h3>除錯資訊 (Debug Info):</h3>
+                <div id="debugInfo">等待輸入... (Waiting for input...)</div>
+            </div>
+
+            <div class="keyboard-section">
+                <h2>鍵盤配置 (Keyboard Layout)</h2>
+
+                <div class="keyboard-layout">
+                    <h3>基本鍵盤</h3>
+                    <table>
+                        <tr><td>Ｑ</td><td>Ｗ</td><td>Ｅ</td><td>Ｒ</td><td>Ｔ</td><td>Ｙ</td><td>Ｕ</td><td>Ｉ</td><td>Ｏ</td><td>Ｐ</td></tr>
+                        <tr><td>Ａ</td><td>Ｓ</td><td>Ｄ</td><td>Ｆ</td><td>Ｇ</td><td>Ｈ</td><td>Ｊ</td><td>Ｋ</td><td>Ｌ</td><td>；</td></tr>
+                        <tr><td>Ｚ</td><td>Ｘ</td><td>Ｃ</td><td>Ｖ</td><td>Ｂ</td><td>Ｎ</td><td>Ｍ</td><td>，</td><td>．</td><td>／</td></tr>
+                    </table>
+                </div>
+
+                <div class="keyboard-layout">
+                    <h3>數字鍵對應</h3>
+                    <table>
+                        <tr><td>１</td><td>２</td><td>３</td><td class="highlight">４</td><td>５</td><td>６</td><td class="highlight">７</td><td>８</td><td>９</td><td>０</td></tr>
+                        <tr><td>一</td><td>二</td><td>三</td><td class="highlight">四</td><td>五</td><td>六</td><td class="highlight">七</td><td>八</td><td>九</td><td>十</td></tr>
+                        <tr><td>竹</td><td>廾</td><td>廿</td><td class="highlight">火</td><td>乂</td><td>手</td><td class="highlight">木</td><td>人</td><td>尸</td><td>／</td></tr>
+                    </table>
+                </div>
+
+                <div class="keyboard-layout">
+                    <h3>字根對應</h3>
+                    <table>
+                        <tr><td>中</td><td>乙</td><td>貝</td><td class="highlight">心</td><td>彎</td><td>女</td><td class="highlight">刀</td><td>日</td><td>月</td><td>口</td></tr>
+                        <tr><td>一</td><td>二</td><td>三</td><td class="highlight">四</td><td>五</td><td>六</td><td class="highlight">土</td><td>八</td><td>九</td><td>十</td></tr>
+                        <tr><td>竹</td><td>草</td><td>散</td><td class="highlight">火</td><td>插</td><td>手</td><td class="highlight">木</td><td>人</td><td>耳</td><td>空</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // So61 IME Implementation
+        class So61IME {
+            constructor() {
+                this.dictionary = {};
+                this.currentCode = '';
+                this.loadDictionary();
+                this.initEventListeners();
+            }
+
+            // Load dictionary data
+            loadDictionary() {
+                // Dictionary data from so61utf8.txt
+                const dictData = `
+___ 中會有的對上了是就我一為在國他要地以大個和到出不這用來人時，
+
+Q__ 川先質忠螺靠制書看告生鬥反由鬧片牡製史牌物盡毛劃數雖段失特牛
+QQ_ 蟲蚧﹏﹏牬﹏蚓﹏瓥﹏肅﹏蜵申螗﹏蠐﹏﹏牪﹏蠨蛑蠋斶﹏﹏﹏蠾串
+QW_ 卮﹏牸蜿瓟蛵蟾蛫蜉犉蝣﹏﹏虹﹏牼﹏﹏蜳﹏蚅﹏犈蜷﹏﹏﹏虼﹏﹏
+QE_ ﹏﹏蝸蠙蟦﹏費﹏犒﹏﹏蠀﹏﹏蝜螪犢﹏蟜蝻贊﹏蠵賮觕﹏牘蟘犞貴
+QR_ 患﹏﹏螅﹏﹏﹏﹏蟋﹏﹏﹏慇蟌﹏﹏蟛牻蛖蟪﹏﹏﹏毸蜒﹏﹏﹏蟉虯
+QS_ 蛾蛉﹏瓝虳﹏牣﹏蚐蛇﹏牋﹏犤蟻乓﹏﹏屔牝虴蠛﹏﹏螰﹏蚍﹏蝘我
+QD_ 蝂﹏﹏﹏蟃﹏﹏犦蠼蝦﹏﹏蝃﹏﹏版蚑犌殷毬﹏蠖﹏﹏﹏﹏﹏蚾段蛷
+QF_ 蚰蝞﹏﹏﹏﹏﹏蝐蟠﹏眚﹏牰蠝﹏﹏朄蝠﹏盾蝒﹏蛐蟷﹏蝳蝀﹏﹏看
+QH_ 蚯牷螟螾﹏鬨﹏蝗犋﹏蛛﹏毢﹏蠊兵﹏蝤蜞螹﹏﹏蟥蚚﹏﹏蜥蟤朱斤
+
+W__ 訓記講認孫訴分識論話企議設眉功全調讓誤計說合公談改領命該討工
+WQ_ 介﹏﹏﹏﹏﹏﹏﹏蝨﹏﹏﹏﹏﹏﹏﹏﹏﹏諷諱虱﹏﹏﹏﹏﹏﹏螸蛩﹏
+WW_ ﹏謒﹏訌孢誙譫詭諄谾﹏試﹏仝﹏﹏讟瓮瓴﹏﹏﹏﹏﹏﹏孖誖訖瓨﹏
+WE_ ﹏﹏﹏﹏﹏譎貪讚謞﹏﹏﹏﹏﹏貧謫讀謪譑諵﹏﹏﹏﹏﹏謮﹏﹏﹏貢
+WR_ 讈診誋証愻忿念譅愈﹏讔諗諰謥諺﹏誌豂恐譓﹏﹏﹏憨誕譿悆慾謬忌
+WS_ ﹏詅﹏詫﹏﹏訒﹏戧詑﹏令﹏訿﹏﹏﹏﹏﹏﹏託諓﹏﹏﹏﹏﹏訛﹏﹏
+WD_ ﹏﹏﹏﹏謾諔﹏﹏﹏﹏謏詠﹏﹏﹏﹏﹏﹏﹏汆譭護敆﹏﹏謢敘詖諏汞
+
+E__ 濟汽購賦濕婆則潛清向剛混沒軍周演塗濃沉準財同治淡敗流深體冠貝
+EQ_ 賗骱﹏浶﹏﹏﹏湦﹏蠈﹏蚤洠濁﹏﹏﹏﹏﹏湋﹏﹏滍髑﹏潾﹏﹏﹏﹏
+EW_ ﹏﹏譻涴溼涇贍﹏淳﹏澨﹏滘﹏髊﹏浡甖﹏涳貶﹏﹏﹏﹏﹏﹏汔﹏﹏
+EE_ 潰﹏贔濱濆﹏潏灒滈溳﹏澬髕灊﹏滴贖﹏髇﹏﹏滆溝﹏﹏漬瀆﹏﹏賏
+ER_ 漶淰﹏瀗淴惉澀涊濦﹏﹏濍贂﹏懣濏彫﹏﹏潓﹏濨滲﹏懘澺灪﹏﹏﹏
+ES_ ﹏泠﹏骴﹏﹏澪﹏﹏沱灑淺賤﹏﹏﹏﹏﹏骫﹏瀎衊戙﹏﹏﹏﹏﹏﹏叉
+
+R__ 牢字實憶紫安割宣情官性它慢富家收室裝快些必恰密步政須案定將心
+RQ_ ﹏齘﹏蜜﹏﹏懈蠶惺﹏﹏﹏慅﹏﹏﹏懠悌宧﹏﹏﹏﹏﹏慥憐悚螿宦忡
+RW_ 牄愴﹏惋齙怉憺宛惇﹏﹏訾寋寣惸﹏悖忔﹏悾悸﹏謇惓﹏﹏﹏齕﹏﹏
+RE_ 憒愩﹏﹏憤寊憰﹏﹏﹏賨貲懫慣觜寶﹏﹏憍﹏﹏鬵賽賓惝﹏懶﹏﹏﹏
+RR_ ﹏﹏﹏怔惚﹏﹏惌﹏悹﹏憾﹏惢﹏﹏憉﹏悿憓﹏﹏慘﹏齴憲﹏憀寥﹏
+RS_ 戕齡惘齜﹏﹏﹏惃﹏﹏此怜齔齥﹏戭﹏﹏﹏恅宅懱寒﹏﹏﹏﹏﹏怩﹏
+
+T__ 緯經續總繼網別織編結組約線細幼響包紙級絨統給絕綜變維樂及紅鳥
+TQ_ 繡紒﹏﹏蠻縴繈紖蠿紳蠁紃﹏﹏﹏﹏繲綈﹏蛗﹏﹏﹏﹏絳繗綀﹏﹏蝁
+TW_ ﹏﹏﹏綩孿﹏﹏﹏綧包﹏﹏﹏紅縒﹏綍﹏綒訇孕﹏﹏綣﹏耔﹏紇鳦紀
+TE_ 繢﹏緺繽﹏﹏繘纘縞縜﹏﹏纗﹏﹏﹏﹏﹏繑﹏﹏﹏耩﹏﹏績﹏﹏﹏﹏
+TR_ ﹏紾﹏﹏戀﹏﹏﹏﹏﹏惡﹏﹏緦﹏繶﹏﹏﹏繐忽﹏縿﹏綖﹏﹏﹏繆糾
+TS_ ﹏紽﹏絁﹏﹏紐﹏﹏紂絏戱﹏﹏﹏紋乍﹏﹏﹏﹏緻綷﹏﹏﹏﹏﹏紎﹏
+
+Y__ 姑姓娘妻妙威委如婦孩女奴奶嫁姊妹委嬰後婆婚娟始遺威姐姻聖妖妥妮
+YQ_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏蚺﹏﹏
+YW_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+YE_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+YR_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+U__ 劃剩到利列刺刷刪制刑創刊割判劃則前利創劃刻刮乙川刁別丹乃丸刃
+UQ_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+I__ 時昌晨曰昭暗晶暴晚昏早明曾智曉景普曬晃暖照暫旺曆昨晴映映易昆暱
+IQ_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+O__ 胡胃胞脖肺胎腦肩肝膚肚背胸脫脂肥腫肯腔腹脾腿腎胡脹胎腰肌胃期腸
+OQ_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+
+P__ 台吉否咐咬呎哈告命名吹哭咕周和呆吸員咪呀吧呢哼喊嗽啦句叫吵哇
+PQ_ ﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏﹏
+`;
+
+                // Parse dictionary
+                const lines = dictData.trim().split('\n');
+                for (let line of lines) {
+                    if (line.trim() === '') continue;
+
+                    const parts = line.split(' ');
+                    if (parts.length >= 2) {
+                        const code = parts[0].replace(/_/g, '').toUpperCase();
+                        const chars = parts.slice(1).join('');
+
+                        // Filter out invalid characters (﹏)
+                        const validChars = [];
+                        for (let char of chars) {
+                            if (char !== '﹏' && char.trim() !== '') {
+                                validChars.push(char);
+                            }
+                        }
+
+                        if (code && validChars.length > 0) {
+                            this.dictionary[code] = validChars;
+                        }
+                    }
+                }
+
+                console.log('Dictionary loaded:', Object.keys(this.dictionary).length, 'entries');
+            }
+
+            // Initialize event listeners
+            initEventListeners() {
+                const inputCode = document.getElementById('inputCode');
+                const outputArea = document.getElementById('outputArea');
+
+                inputCode.addEventListener('input', (e) => {
+                    this.currentCode = e.target.value.toUpperCase();
+                    this.updateCandidates();
+                });
+
+                inputCode.addEventListener('keydown', (e) => {
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.selectFirstCandidate();
+                    } else if (e.key === 'Backspace' && this.currentCode.length === 0) {
+                        // Allow normal backspace in output
+                    }
+                });
+            }
+
+            // Update candidate list
+            updateCandidates() {
+                const candidateList = document.getElementById('candidateList');
+                const debugInfo = document.getElementById('debugInfo');
+
+                candidateList.innerHTML = '';
+
+                if (this.currentCode.length === 0) {
+                    debugInfo.textContent = '等待輸入... (Waiting for input...)';
+                    return;
+                }
+
+                // Search for matches
+                const matches = this.findMatches(this.currentCode);
+
+                debugInfo.textContent = `代碼: ${this.currentCode} | 找到 ${matches.length} 個候選字 | Code: ${this.currentCode} | Found ${matches.length} candidates`;
+
+                if (matches.length === 0) {
+                    const noMatch = document.createElement('div');
+                    noMatch.textContent = '無候選字 (No candidates)';
+                    noMatch.style.color = '#999';
+                    candidateList.appendChild(noMatch);
+                    return;
+                }
+
+                // Display candidates
+                matches.forEach((char, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'candidate-item';
+                    item.textContent = `${index + 1}. ${char}`;
+                    item.onclick = () => this.selectCandidate(char);
+                    candidateList.appendChild(item);
+                });
+            }
+
+            // Find matches in dictionary
+            findMatches(code) {
+                const matches = [];
+
+                // Exact match
+                if (this.dictionary[code]) {
+                    matches.push(...this.dictionary[code]);
+                }
+
+                // Prefix matches (for partial codes)
+                if (code.length < 3) {
+                    for (let key in this.dictionary) {
+                        if (key.startsWith(code) && key !== code) {
+                            // Add some characters from prefix matches
+                            const chars = this.dictionary[key].slice(0, 3);
+                            matches.push(...chars);
+                            if (matches.length >= 30) break;
+                        }
+                    }
+                }
+
+                // Remove duplicates
+                return [...new Set(matches)];
+            }
+
+            // Select a candidate
+            selectCandidate(char) {
+                const outputArea = document.getElementById('outputArea');
+                outputArea.value += char;
+
+                // Clear input code
+                document.getElementById('inputCode').value = '';
+                this.currentCode = '';
+                this.updateCandidates();
+
+                // Focus back to input
+                document.getElementById('inputCode').focus();
+            }
+
+            // Select first candidate
+            selectFirstCandidate() {
+                const matches = this.findMatches(this.currentCode);
+                if (matches.length > 0) {
+                    this.selectCandidate(matches[0]);
+                }
+            }
+        }
+
+        // Initialize IME when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            const ime = new So61IME();
+        });
+    </script>
+</body>
+</html>
