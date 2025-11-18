@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So61 六一輸入法 - 互動教學系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .lesson-group {
+            margin-bottom: 20px;
+        }
+
+        .lesson-group h3 {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        .lesson-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #34495e;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+
+        .lesson-item:hover {
+            background: #3498db;
+            transform: translateX(5px);
+        }
+
+        .lesson-item.active {
+            background: #3498db;
+            font-weight: bold;
+        }
+
+        .lesson-item.completed::before {
+            content: "✓ ";
+            margin-right: 5px;
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .lesson-content {
+            padding: 40px;
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+        }
+
+        .lesson-content h2 {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .lesson-content h3 {
+            font-size: 1.5em;
+            color: #34495e;
+            margin: 20px 0 10px 0;
+        }
+
+        .lesson-content p {
+            line-height: 1.8;
+            margin: 15px 0;
+            color: #555;
+        }
+
+        /* Keyboard Layout Tables */
+        .keyboard-table {
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .keyboard-table td {
+            border: 2px solid #ddd;
+            padding: 15px;
+            text-align: center;
+            font-size: 1.3em;
+            background: white;
+            transition: background 0.2s;
+        }
+
+        .keyboard-table td:hover {
+            background: #f0f4ff;
+        }
+
+        .keyboard-table .highlight {
+            background-color: #ddffdd;
+            font-weight: bold;
+        }
+
+        /* Practice Area */
+        .practice-area {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .practice-area h3 {
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .exercise {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .exercise-question {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .exercise-target {
+            font-size: 2em;
+            color: #e74c3c;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        #practiceInput {
+            width: 100%;
+            font-size: 1.5em;
+            padding: 15px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            font-family: monospace;
+            margin: 10px 0;
+        }
+
+        #practiceOutput {
+            width: 100%;
+            min-height: 80px;
+            font-size: 1.8em;
+            padding: 15px;
+            border: 2px solid #2ecc71;
+            border-radius: 8px;
+            background: #f8fff8;
+            margin: 10px 0;
+        }
+
+        .candidate-area {
+            min-height: 60px;
+            padding: 15px;
+            background: #e8f4f8;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        #candidateList {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .candidate-item {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.3em;
+        }
+
+        .candidate-item:hover {
+            background: #3498db;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Info Box */
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .info-box.success {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+
+        .info-box.warning {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px 5px;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #27ae60;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Character Display */
+        .char-display {
+            display: inline-block;
+            font-size: 3em;
+            padding: 20px;
+            margin: 10px;
+            border: 3px solid #3498db;
+            border-radius: 10px;
+            background: white;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .code-display {
+            font-family: monospace;
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 1.2em;
+        }
+
+        /* Navigation Buttons */
+        .lesson-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+        }
+
+        .example-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .example-list li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+
+        .finger-guide {
+            display: inline-block;
+            padding: 5px 10px;
+            margin: 2px;
+            background: #e8f4f8;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <h2>📚 課程目錄</h2>
+
+            <div class="lesson-group">
+                <h3>第一章：基礎介紹</h3>
+                <div class="lesson-item" data-lesson="lesson-intro">簡介與特色</div>
+                <div class="lesson-item" data-lesson="lesson-features">學習建議</div>
+            </div>
+
+            <div class="lesson-group">
+                <h3>第二章：鍵盤指法</h3>
+                <div class="lesson-item" data-lesson="lesson-fingers">指法說明</div>
+                <div class="lesson-item" data-lesson="lesson-keyboard">鍵位講解</div>
+                <div class="lesson-item" data-lesson="lesson-practice1">練習：字根形</div>
+            </div>
+
+            <div class="lesson-group">
+                <h3>第三章：取碼方式</h3>
+                <div class="lesson-item" data-lesson="lesson-coding">取碼原則</div>
+                <div class="lesson-item" data-lesson="lesson-split">字體分割</div>
+                <div class="lesson-item" data-lesson="lesson-practice2">練習：簡單字</div>
+            </div>
+
+            <div class="lesson-group">
+                <h3>第四章：實戰練習</h3>
+                <div class="lesson-item" data-lesson="lesson-exercise1">常用字練習</div>
+                <div class="lesson-item" data-lesson="lesson-exercise2">詞組練習</div>
+                <div class="lesson-item" data-lesson="lesson-free">自由練習</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>🎓 So61 六一輸入法 互動教學</h1>
+                <p>三碼定江山，輕鬆學會最快的中文輸入法</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+                </div>
+            </div>
+
+            <!-- Lesson: Introduction -->
+            <div class="lesson-content active" id="lesson-intro">
+                <h2>第一章：六一輸入法簡介</h2>
+
+                <h3>🎯 選擇六一輸入法的理由</h3>
+                <div class="info-box">
+                    <ul class="example-list">
+                        <li><strong>免費：</strong>六一輸入法永久免費供大眾下載使用</li>
+                        <li><strong>中打極速：</strong>只使用下面三排的鍵，永遠不需用打到上排的數字鍵</li>
+                        <li><strong>三碼定江山：</strong>一個字最多三碼，速度絕對最快</li>
+                        <li><strong>兩碼字免背誦：</strong>學習最輕鬆，不需死記簡碼</li>
+                        <li><strong>尾碼先取：</strong>拆碼無死角，輔以前導式提示，讓您打字超容易</li>
+                    </ul>
+                </div>
+
+                <h3>📖 基本概念</h3>
+                <p>學任何輸入法都一樣，千萬不要只學一下子拆碼的方式，就想要開始打字了。如此必然會造成拆碼的困難，不管怎麼拆都錯。</p>
+
+                <p><strong>重要提醒：</strong>不用等到取碼法則都懂才練習打字，而是<span style="color: #e74c3c; font-weight: bold;">邊學邊打</span>！</p>
+
+                <div class="info-box success">
+                    <h4>🎖️ 學習目標</h4>
+                    <p>只要一個月，六一輸入法讓您打得比學了十年的倉頡快！</p>
+                    <p>只要一個月，六一輸入法讓您打得比打了三十年的注音快！</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Features -->
+            <div class="lesson-content" id="lesson-features">
+                <h2>學習建議</h2>
+
+                <h3>💡 建議學習方式</h3>
+                <p>學習輸入法的不二法門，就是<strong>多練習</strong>。剛開始的時候，只要照著碼打就行，只要多練習幾次，就會慢慢熟了。</p>
+
+                <div class="info-box">
+                    <h4>📝 學習步驟</h4>
+                    <ol style="margin-left: 20px; line-height: 2;">
+                        <li>先熟悉鍵盤配置（本質是數字鍵 1-0）</li>
+                        <li>了解基本字根對應</li>
+                        <li>學習取碼原則（首碼、尾碼、補碼）</li>
+                        <li>開始練習簡單的字</li>
+                        <li>逐步增加練習難度</li>
+                        <li>每天堅持練習，形成肌肉記憶</li>
+                    </ol>
+                </div>
+
+                <h3>⏱️ 過渡期建議</h3>
+                <p>在剛學六一輸入法的這一段過渡期間，也許您會在六一輸入法和您之前熟悉的輸入法之間來回切換打字。</p>
+
+                <div class="info-box warning">
+                    <p><strong>重要：</strong>這個過渡期應該盡可能縮短，建議在<strong>一個月之內</strong>完全拋棄舊的輸入法而完全使用六一輸入法來打字。</p>
+                    <p>如果三個月了還在用舊的輸入法打字，您應該警覺到，其實您已經放棄了。</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Finger Positions -->
+            <div class="lesson-content" id="lesson-fingers">
+                <h2>第二章：指法說明</h2>
+
+                <h3>✋ 基本指法</h3>
+                <p>六一輸入法強烈建議<strong>不看鍵盤即能打字</strong>的方式。如果目光要在螢幕、鍵盤、文稿之間游移，那將是一件很累的事。</p>
+
+                <h3>🎹 鍵位對應</h3>
+                <p>六一輸入法特別使用三組 1~10 的數字來定義字根：</p>
+
+                <table class="keyboard-table">
+                    <tr>
+                        <td>１</td><td>２</td><td>３</td><td class="highlight">４</td><td>５</td>
+                        <td>６</td><td class="highlight">７</td><td>８</td><td>９</td><td>０</td>
+                    </tr>
+                    <tr>
+                        <td>一</td><td>二</td><td>三</td><td class="highlight">四</td><td>五</td>
+                        <td>六</td><td class="highlight">七</td><td>八</td><td>九</td><td>十</td>
+                    </tr>
+                    <tr>
+                        <td>竹</td><td>廾</td><td>廿</td><td class="highlight">火</td><td>乂</td>
+                        <td>手</td><td class="highlight">木</td><td>人</td><td>尸</td><td>／</td>
+                    </tr>
+                </table>
+
+                <div class="info-box">
+                    <h4>👆 手指分配</h4>
+                    <p>
+                        <span class="finger-guide">１ - 左小指</span>
+                        <span class="finger-guide">２ - 左無名指</span>
+                        <span class="finger-guide">３ - 左中指</span>
+                        <span class="finger-guide">４５ - 左食指</span>
+                        <span class="finger-guide">６７ - 右食指</span>
+                        <span class="finger-guide">８ - 右中指</span>
+                        <span class="finger-guide">９ - 右無名指</span>
+                        <span class="finger-guide">０ - 右小指</span>
+                    </p>
+                </div>
+
+                <div class="info-box success">
+                    <p><strong>定位鍵：</strong>其中四(F)和七(J)的位置有小突起，方便『食指』定位用。</p>
+                    <p>綠色標示的位置即為食指位置，沒事的時候可以感受一下。</p>
+                </div>
+
+                <p style="color: #e74c3c; font-weight: bold; font-size: 1.2em;">
+                    ⚠️ 特別注意：我們所用的１２３４５６７８９０不是最上面那一排的數字，而是下面那一排 QWERTYUIOP！
+                </p>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Keyboard Layout -->
+            <div class="lesson-content" id="lesson-keyboard">
+                <h2>鍵位講解</h2>
+
+                <h3>🔤 三層鍵盤對應</h3>
+                <p>為了能讓使用者更方便記住鍵盤的位置，我們特別使用了數字碼當做字根。</p>
+
+                <h4>上排：數字形</h4>
+                <table class="keyboard-table">
+                    <tr>
+                        <td>１</td><td>２</td><td>３</td><td class="highlight">４</td><td>５</td>
+                        <td>６</td><td class="highlight">７</td><td>８</td><td>９</td><td>０</td>
+                    </tr>
+                    <tr>
+                        <td>一</td><td>二</td><td>三</td><td class="highlight">四</td><td>五</td>
+                        <td>六</td><td class="highlight">七</td><td>八</td><td>九</td><td>十</td>
+                    </tr>
+                    <tr>
+                        <td>竹</td><td>廾</td><td>廿</td><td class="highlight">火</td><td>乂</td>
+                        <td>手</td><td class="highlight">木</td><td>人</td><td>尸</td><td>／</td>
+                    </tr>
+                </table>
+
+                <h4 style="margin-top: 30px;">中排：字意讀音</h4>
+                <p>因為上排和中排的讀音都一樣，所以我們特別又弄了一個以字意為發音的列表：</p>
+                <table class="keyboard-table">
+                    <tr>
+                        <td>中</td><td>乙</td><td>貝</td><td class="highlight">心</td><td>彎</td>
+                        <td>女</td><td class="highlight">刀</td><td>日</td><td>月</td><td>口</td>
+                    </tr>
+                    <tr>
+                        <td>一</td><td>二</td><td>三</td><td class="highlight">四</td><td>五</td>
+                        <td>六</td><td class="highlight">土</td><td>八</td><td>九</td><td>十</td>
+                    </tr>
+                    <tr>
+                        <td>竹</td><td>草</td><td>散</td><td class="highlight">火</td><td>插</td>
+                        <td>手</td><td class="highlight">木</td><td>人</td><td>耳</td><td>空</td>
+                    </tr>
+                </table>
+
+                <h4 style="margin-top: 30px;">兩音節讀音</h4>
+                <p>如果可以接受兩個音節的話，可以加上『上排、中排、下排』：</p>
+                <table class="keyboard-table">
+                    <tr>
+                        <td>上一</td><td>上二</td><td>上三</td><td class="highlight">上四</td><td>上五</td>
+                        <td>上六</td><td class="highlight">上七</td><td>上八</td><td>上九</td><td>上十</td>
+                    </tr>
+                    <tr>
+                        <td>中一</td><td>中二</td><td>中三</td><td class="highlight">中四</td><td>中五</td>
+                        <td>中六</td><td class="highlight">中七</td><td>中八</td><td>中九</td><td>中十</td>
+                    </tr>
+                    <tr>
+                        <td>下一</td><td>下二</td><td>下三</td><td class="highlight">下四</td><td>下五</td>
+                        <td>下六</td><td class="highlight">下七</td><td>下八</td><td>下九</td><td>下十</td>
+                    </tr>
+                </table>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Practice 1 -->
+            <div class="lesson-content" id="lesson-practice1">
+                <h2>練習：字根記憶</h2>
+
+                <h3>🎯 熟悉鍵位</h3>
+                <p>請在下方練習輸入，熟悉每個按鍵對應的字根：</p>
+
+                <div class="practice-area">
+                    <h3>互動練習區</h3>
+
+                    <div class="exercise-question">請輸入代碼：</div>
+                    <input type="text" id="practiceInput" placeholder="在這裡輸入代碼...">
+
+                    <div class="candidate-area">
+                        <strong>候選字：</strong>
+                        <div id="candidateList"></div>
+                    </div>
+
+                    <div class="exercise-question">已輸入文字：</div>
+                    <textarea id="practiceOutput" readonly></textarea>
+
+                    <button class="btn btn-success" onclick="clearPractice()">清除重新開始</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 提示</h4>
+                    <p>• 按鍵 Q W E R T Y U I O P 對應 1 2 3 4 5 6 7 8 9 0</p>
+                    <p>• 輸入代碼後會顯示候選字，點擊候選字即可輸入</p>
+                    <p>• 按空格鍵可選擇第一個候選字</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Coding Rules -->
+            <div class="lesson-content" id="lesson-coding">
+                <h2>第三章：取碼方式</h2>
+
+                <h3>📐 基本原則</h3>
+                <p>在本質上，六一輸入法任何一個字皆取<strong>三碼</strong>，碼統一長度將使取碼更為方便與精準。</p>
+
+                <div class="info-box">
+                    <h4>三個碼的定義</h4>
+                    <ul class="example-list">
+                        <li><strong>首碼：</strong>字的開頭部分</li>
+                        <li><strong>尾碼：</strong>字的結尾部分（尾碼先取！）</li>
+                        <li><strong>補碼：</strong>補充的第三碼</li>
+                    </ul>
+                </div>
+
+                <h3>🔍 取碼規則</h3>
+                <p><strong>重要特色：</strong>六一輸入法特別採用<span style="color: #e74c3c; font-weight: bold;">尾碼提前取</span>的方式來進行拆碼。</p>
+
+                <div class="info-box success">
+                    <h4>字體可分割時：</h4>
+                    <ul style="margin-left: 20px; line-height: 2;">
+                        <li>字首取一碼</li>
+                        <li>字身取兩碼（字身的首碼及尾碼）</li>
+                        <li>如果字身只有一碼，補碼取字首的尾碼</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h4>字體不可分割時：</h4>
+                    <p>全部取三碼</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Character Splitting -->
+            <div class="lesson-content" id="lesson-split">
+                <h2>字體分割方式</h2>
+
+                <h3>📏 分割原則</h3>
+
+                <h4>一、字首以分出最小單位為原則</h4>
+                <ul class="example-list">
+                    <li><strong>翁：</strong>字首的部分只有羽頭，而不是公</li>
+                    <li><strong>麗：</strong>字首為『一一』，故首碼應該取『一』</li>
+                    <li><strong>當：</strong>字首的部分只有口上方的字，而不是尚</li>
+                    <li><strong>受：</strong>斜月的字，下面的字視為相連，故字身為又</li>
+                    <li><strong>愛：</strong>斜月的字，下面的字視為相連，故字身為心</li>
+                </ul>
+
+                <h4>二、分內外的字，其外部的字需獨立，不可混雜</h4>
+                <ul class="example-list">
+                    <li><strong>囟：</strong>外面的碼有混雜其他字型，整個字體視為不可分割</li>
+                    <li><strong>面：</strong>外面的碼有混雜其他字型，整個字體視為不可分割</li>
+                    <li><strong>圓：</strong>可分割字型，外圍『囗』先取，再取裡面的尾碼『貝』，補碼『口』</li>
+                </ul>
+
+                <div class="info-box warning">
+                    <h4>⚠️ 重要</h4>
+                    <p>外面的方框『囗』若有其他字元連住，則不取分開的字首、字身！</p>
+                </div>
+
+                <h3>🎯 範例練習</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <p><strong>相：</strong><span class="code-display">木四◎</span> （木 + 目）</p>
+                    <p><strong>標：</strong><span class="code-display">木火◎</span> （木 + 票尾）</p>
+                    <p><strong>割：</strong><span class="code-display">４７◎</span> （害 + 刀）</p>
+                    <p><strong>計：</strong><span class="code-display">２十◎</span> （言 + 十）</p>
+                    <p><strong>天：</strong><span class="code-display">一九◎</span> （一 + 大）</p>
+                    <p><strong>水：</strong><span class="code-display">三／◎</span> （三點水）</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Practice 2 -->
+            <div class="lesson-content" id="lesson-practice2">
+                <h2>練習：簡單字拆解</h2>
+
+                <h3>🎯 實戰演練</h3>
+                <p>現在讓我們來練習一些簡單的字，請嘗試輸入下面這些字：</p>
+
+                <div class="practice-area">
+                    <h3>互動練習區</h3>
+
+                    <div class="exercise">
+                        <div class="exercise-question">練習目標字：</div>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin: 20px 0;">
+                            <div>
+                                <div class="char-display">中</div>
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <span class="code-display">Q/</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="char-display">工</div>
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <span class="code-display">W</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="char-display">我</div>
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <span class="code-display">QS</span>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="char-display">看</div>
+                                <div style="text-align: center; margin-top: 10px;">
+                                    <span class="code-display">QF</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="exercise-question">請輸入代碼：</div>
+                    <input type="text" id="practiceInput2" placeholder="試著輸入上面的字...">
+
+                    <div class="candidate-area">
+                        <strong>候選字：</strong>
+                        <div id="candidateList2"></div>
+                    </div>
+
+                    <div class="exercise-question">已輸入文字：</div>
+                    <textarea id="practiceOutput2" readonly></textarea>
+
+                    <button class="btn btn-success" onclick="clearPractice2()">清除重新開始</button>
+                </div>
+
+                <div class="info-box">
+                    <h4>💡 提示</h4>
+                    <p>• 記住：Q W E R T Y U I O P 對應數字 1 2 3 4 5 6 7 8 9 0</p>
+                    <p>• 如果碼數不足三碼，可以用 / 補足</p>
+                    <p>• 兩碼字標記為 ◎，表示只需兩碼即可</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Exercise 1 -->
+            <div class="lesson-content" id="lesson-exercise1">
+                <h2>第四章：常用字練習</h2>
+
+                <h3>📝 常用字練習</h3>
+                <p>讓我們來練習一些常用的字詞。嘗試輸入以下文字：</p>
+
+                <div class="practice-area">
+                    <h3>練習文句</h3>
+
+                    <div class="info-box">
+                        <p style="font-size: 1.5em; line-height: 2;">我 看 中 文 工 作</p>
+                        <p style="color: #666;">提示：QS QF Q/ W/ W WS/</p>
+                    </div>
+
+                    <div class="exercise-question">請輸入代碼：</div>
+                    <input type="text" id="practiceInput3" placeholder="開始練習打字...">
+
+                    <div class="candidate-area">
+                        <strong>候選字：</strong>
+                        <div id="candidateList3"></div>
+                    </div>
+
+                    <div class="exercise-question">已輸入文字：</div>
+                    <textarea id="practiceOutput3" readonly></textarea>
+
+                    <button class="btn btn-success" onclick="clearPractice3()">清除重新開始</button>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Exercise 2 -->
+            <div class="lesson-content" id="lesson-exercise2">
+                <h2>詞組練習</h2>
+
+                <h3>📖 短句練習</h3>
+                <p>現在試著輸入完整的句子：</p>
+
+                <div class="practice-area">
+                    <h3>練習句子</h3>
+
+                    <div class="info-box">
+                        <p style="font-size: 1.3em; line-height: 2;">
+                            練習目標：<br>
+                            「中國」「工作」「我的」「人生」
+                        </p>
+                    </div>
+
+                    <div class="exercise-question">請輸入代碼：</div>
+                    <input type="text" id="practiceInput4" placeholder="試著組合詞組...">
+
+                    <div class="candidate-area">
+                        <strong>候選字：</strong>
+                        <div id="candidateList4"></div>
+                    </div>
+
+                    <div class="exercise-question">已輸入文字：</div>
+                    <textarea id="practiceOutput4" readonly></textarea>
+
+                    <button class="btn btn-success" onclick="clearPractice4()">清除重新開始</button>
+                </div>
+
+                <div class="info-box success">
+                    <h4>🎉 恭喜！</h4>
+                    <p>您已經學會了基本的六一輸入法！繼續多加練習，很快就能達到飛快的輸入速度！</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-primary" onclick="nextLesson()">下一課 →</button>
+                </div>
+            </div>
+
+            <!-- Lesson: Free Practice -->
+            <div class="lesson-content" id="lesson-free">
+                <h2>自由練習</h2>
+
+                <h3>🎨 自由發揮</h3>
+                <p>現在您可以自由練習，嘗試輸入任何您想打的字！</p>
+
+                <div class="practice-area">
+                    <h3>自由練習區</h3>
+
+                    <div class="exercise-question">請輸入代碼：</div>
+                    <input type="text" id="practiceInput5" placeholder="盡情發揮，想打什麼就打什麼..." autofocus>
+
+                    <div class="candidate-area">
+                        <strong>候選字：</strong>
+                        <div id="candidateList5"></div>
+                    </div>
+
+                    <div class="exercise-question">已輸入文字：</div>
+                    <textarea id="practiceOutput5" rows="8" readonly></textarea>
+
+                    <button class="btn btn-success" onclick="clearPractice5()">清除重新開始</button>
+                    <button class="btn btn-primary" onclick="window.open('../webime/index.html', '_blank')">
+                        打開完整版 IME →
+                    </button>
+                </div>
+
+                <div class="info-box success">
+                    <h4>🌟 完成教學！</h4>
+                    <p>恭喜您完成了所有的教學課程！</p>
+                    <p>記住：熟能生巧，持續練習是掌握六一輸入法的關鍵。</p>
+                    <p>您可以點擊上方按鈕打開完整版的 IME 進行更多練習。</p>
+                </div>
+
+                <div class="lesson-nav">
+                    <button class="btn btn-primary" onclick="prevLesson()">← 上一課</button>
+                    <button class="btn btn-success" onclick="alert('恭喜完成所有課程！')">🎓 完成課程</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // So61 IME Core
+        class So61IME {
+            constructor() {
+                this.dictionary = {};
+                this.loadDictionary();
+            }
+
+            loadDictionary() {
+                const dictData = `
+___ 中會有的對上了是就我一為在國他要地以大個和到出不這用來人時，
+
+Q__ 川先質忠螺靠制書看告生鬥反由鬧片牡製史牌物盡毛劃數雖段失特牛
+QQ_ 蟲蚧﹏﹏牬﹏蚓﹏瓥﹏肅﹏蜵申螗﹏蠐﹏﹏牪﹏蠨蛑蠋斶﹏﹏﹏蠾串
+QW_ 卮﹏牸蜿瓟蛵蟾蛫蜉犉蝣﹏﹏虹﹏牼﹏﹏蜳﹏蚅﹏犈蜷﹏﹏﹏虼﹏﹏
+QE_ ﹏﹏蝸蠙蟦﹏費﹏犒﹏﹏蠀﹏﹏蝜螪犢﹏蟜蝻贊﹏蠵賮觕﹏牘蟘犞貴
+QR_ 患﹏﹏螅﹏﹏﹏﹏蟋﹏﹏﹏慇蟌﹏﹏蟛牻蛖蟪﹏﹏﹏毸蜒﹏﹏﹏蟉虯
+QS_ 蛾蛉﹏瓝虳﹏牣﹏蚐蛇﹏牋﹏犤蟻乓﹏﹏屔牝虴蠛﹏﹏螰﹏蚍﹏蝘我
+QD_ 蝂﹏﹏﹏蟃﹏﹏犦蠼蝦﹏﹏蝃﹏﹏版蚑犌殷毬﹏蠖﹏﹏﹏﹏﹏蚾段蛷
+QF_ 蚰蝞﹏﹏﹏﹏﹏蝐蟠﹏眚﹏牰蠝﹏﹏朄蝠﹏盾蝒﹏蛐蟷﹏蝳蝀﹏﹏看
+QH_ 蚯牷螟螾﹏鬨﹏蝗犋﹏蛛﹏毢﹏蠊兵﹏蝤蜞螹﹏﹏蟥蚚﹏﹏蜥蟤朱斤
+
+W__ 訓記講認孫訴分識論話企議設眉功全調讓誤計說合公談改領命該討工
+WQ_ 介﹏﹏﹏﹏﹏﹏﹏蝨﹏﹏﹏﹏﹏﹏﹏﹏﹏諷諱虱﹏﹏﹏﹏﹏﹏螸蛩﹏
+WW_ ﹏謒﹏訌孢誙譫詭諄谾﹏試﹏仝﹏﹏讟瓮瓴﹏﹏﹏﹏﹏﹏孖誖訖瓨﹏
+WE_ ﹏﹏﹏﹏﹏譎貪讚謞﹏﹏﹏﹏﹏貧謫讀謪譑諵﹏﹏﹏﹏﹏謮﹏﹏﹏貢
+WR_ 讈診誋証愻忿念譅愈﹏讔諗諰謥諺﹏誌豂恐譓﹏﹏﹏憨誕譿悆慾謬忌
+WS_ ﹏詅﹏詫﹏﹏訒﹏戧詑﹏令﹏訿﹏﹏﹏﹏﹏﹏託諓﹏﹏﹏﹏﹏訛﹏﹏
+WD_ ﹏﹏﹏﹏謾諔﹏﹏﹏﹏謏詠﹏﹏﹏﹏﹏﹏﹏汆譭護敆﹏﹏謢敘詖諏汞
+
+E__ 濟汽購賦濕婆則潛清向剛混沒軍周演塗濃沉準財同治淡敗流深體冠貝
+EQ_ 賗骱﹏浶﹏﹏﹏湦﹏蠈﹏蚤洠濁﹏﹏﹏﹏﹏湋﹏﹏滍髑﹏潾﹏﹏﹏﹏
+EW_ ﹏﹏譻涴溼涇贍﹏淳﹏澨﹏滘﹏髊﹏浡甖﹏涳貶﹏﹏﹏﹏﹏﹏汔﹏﹏
+EE_ 潰﹏贔濱濆﹏潏灒滈溳﹏澬髕灊﹏滴贖﹏髇﹏﹏滆溝﹏﹏漬瀆﹏﹏賏
+ER_ 漶淰﹏瀗淴惉澀涊濦﹏﹏濍贂﹏懣濏彫﹏﹏潓﹏濨滲﹏懘澺灪﹏﹏﹏
+ES_ ﹏泠﹏骴﹏﹏澪﹏﹏沱灑淺賤﹏﹏﹏﹏﹏骫﹏瀎衊戙﹏﹏﹏﹏﹏﹏叉
+
+R__ 牢字實憶紫安割宣情官性它慢富家收室裝快些必恰密步政須案定將心
+RQ_ ﹏齘﹏蜜﹏﹏懈蠶惺﹏﹏﹏慅﹏﹏﹏懠悌宧﹏﹏﹏﹏﹏慥憐悚螿宦忡
+RW_ 牄愴﹏惋齙怉憺宛惇﹏﹏訾寋寣惸﹏悖忔﹏悾悸﹏謇惓﹏﹏﹏齕﹏﹏
+RE_ 憒愩﹏﹏憤寊憰﹏﹏﹏賨貲懫慣觜寶﹏﹏憍﹏﹏鬵賽賓惝﹏懶﹏﹏﹏
+RR_ ﹏﹏﹏怔惚﹏﹏惌﹏悹﹏憾﹏惢﹏﹏憉﹏悿憓﹏﹏慘﹏齴憲﹏憀寥﹏
+RS_ 戕齡惘齜﹏﹏﹏惃﹏﹏此怜齔齥﹏戭﹏﹏﹏恅宅懱寒﹏﹏﹏﹏﹏怩﹏
+
+T__ 緯經續總繼網別織編結組約線細幼響包紙級絨統給絕綜變維樂及紅鳥
+TQ_ 繡紒﹏﹏蠻縴繈紖蠿紳蠁紃﹏﹏﹏﹏繲綈﹏蛗﹏﹏﹏﹏絳繗綀﹏﹏蝁
+TW_ ﹏﹏﹏綩孿﹏﹏﹏綧包﹏﹏﹏紅縒﹏綍﹏綒訇孕﹏﹏綣﹏耔﹏紇鳦紀
+TE_ 繢﹏緺繽﹏﹏繘纘縞縜﹏﹏纗﹏﹏﹏﹏﹏繑﹏﹏﹏耩﹏﹏績﹏﹏﹏﹏
+TR_ ﹏紾﹏﹏戀﹏﹏﹏﹏﹏惡﹏﹏緦﹏繶﹏﹏﹏繐忽﹏縿﹏綖﹏﹏﹏繆糾
+TS_ ﹏紽﹏絁﹏﹏紐﹏﹏紂絏戱﹏﹏﹏紋乍﹏﹏﹏﹏緻綷﹏﹏﹏﹏﹏紎﹏
+
+Y__ 姑姓娘妻妙威委如婦孩女奴奶嫁姊妹委嬰後婆婚娟始遺威姐姻聖妖妥妮
+U__ 劃剩到利列刺刷刪制刑創刊割判劃則前利創劃刻刮乙川刁別丹乃丸刃
+I__ 時昌晨曰昭暗晶暴晚昏早明曾智曉景普曬晃暖照暫旺曆昨晴映映易昆暱
+O__ 胡胃胞脖肺胎腦肩肝膚肚背胸脫脂肥腫肯腔腹脾腿腎胡脹胎腰肌胃期腸
+P__ 台吉否咐咬呎哈告命名吹哭咕周和呆吸員咪呀吧呢哼喊嗽啦句叫吵哇
+`;
+
+                const lines = dictData.trim().split('\n');
+                for (let line of lines) {
+                    if (line.trim() === '') continue;
+                    const parts = line.split(' ');
+                    if (parts.length >= 2) {
+                        const code = parts[0].replace(/_/g, '').toUpperCase();
+                        const chars = parts.slice(1).join('');
+                        const validChars = [];
+                        for (let char of chars) {
+                            if (char !== '﹏' && char.trim() !== '') {
+                                validChars.push(char);
+                            }
+                        }
+                        if (code && validChars.length > 0) {
+                            this.dictionary[code] = validChars;
+                        }
+                    }
+                }
+            }
+
+            findMatches(code) {
+                const matches = [];
+                if (this.dictionary[code]) {
+                    matches.push(...this.dictionary[code]);
+                }
+                if (code.length < 3) {
+                    for (let key in this.dictionary) {
+                        if (key.startsWith(code) && key !== code) {
+                            const chars = this.dictionary[key].slice(0, 3);
+                            matches.push(...chars);
+                            if (matches.length >= 30) break;
+                        }
+                    }
+                }
+                return [...new Set(matches)];
+            }
+        }
+
+        // Global IME instance
+        const ime = new So61IME();
+
+        // Lesson Management
+        const lessons = [
+            'lesson-intro', 'lesson-features', 'lesson-fingers', 'lesson-keyboard',
+            'lesson-practice1', 'lesson-coding', 'lesson-split', 'lesson-practice2',
+            'lesson-exercise1', 'lesson-exercise2', 'lesson-free'
+        ];
+        let currentLessonIndex = 0;
+        const completedLessons = new Set();
+
+        function showLesson(lessonId) {
+            document.querySelectorAll('.lesson-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(lessonId).classList.add('active');
+
+            document.querySelectorAll('.lesson-item').forEach(el => {
+                el.classList.remove('active');
+            });
+            const activeItem = document.querySelector(`[data-lesson="${lessonId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+                completedLessons.add(lessonId);
+                activeItem.classList.add('completed');
+            }
+
+            currentLessonIndex = lessons.indexOf(lessonId);
+            updateProgress();
+            window.scrollTo(0, 0);
+        }
+
+        function nextLesson() {
+            if (currentLessonIndex < lessons.length - 1) {
+                currentLessonIndex++;
+                showLesson(lessons[currentLessonIndex]);
+            }
+        }
+
+        function prevLesson() {
+            if (currentLessonIndex > 0) {
+                currentLessonIndex--;
+                showLesson(lessons[currentLessonIndex]);
+            }
+        }
+
+        function updateProgress() {
+            const progress = Math.round((completedLessons.size / lessons.length) * 100);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = progress + '%';
+            progressBar.textContent = progress + '%';
+        }
+
+        // Practice Area Setup
+        function setupPracticeArea(inputId, candidateId, outputId) {
+            const input = document.getElementById(inputId);
+            const candidateList = document.getElementById(candidateId);
+            const output = document.getElementById(outputId);
+
+            if (!input) return;
+
+            input.addEventListener('input', (e) => {
+                const code = e.target.value.toUpperCase();
+                candidateList.innerHTML = '';
+
+                if (code.length === 0) return;
+
+                const matches = ime.findMatches(code);
+                if (matches.length === 0) {
+                    candidateList.innerHTML = '<div style="color: #999;">無候選字</div>';
+                    return;
+                }
+
+                matches.slice(0, 10).forEach((char, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'candidate-item';
+                    item.textContent = `${index + 1}. ${char}`;
+                    item.onclick = () => {
+                        output.value += char;
+                        input.value = '';
+                        candidateList.innerHTML = '';
+                        input.focus();
+                    };
+                    candidateList.appendChild(item);
+                });
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    const code = input.value.toUpperCase();
+                    const matches = ime.findMatches(code);
+                    if (matches.length > 0) {
+                        output.value += matches[0];
+                        input.value = '';
+                        candidateList.innerHTML = '';
+                    }
+                }
+            });
+        }
+
+        // Clear functions
+        function clearPractice() {
+            document.getElementById('practiceInput').value = '';
+            document.getElementById('practiceOutput').value = '';
+            document.getElementById('candidateList').innerHTML = '';
+        }
+
+        function clearPractice2() {
+            document.getElementById('practiceInput2').value = '';
+            document.getElementById('practiceOutput2').value = '';
+            document.getElementById('candidateList2').innerHTML = '';
+        }
+
+        function clearPractice3() {
+            document.getElementById('practiceInput3').value = '';
+            document.getElementById('practiceOutput3').value = '';
+            document.getElementById('candidateList3').innerHTML = '';
+        }
+
+        function clearPractice4() {
+            document.getElementById('practiceInput4').value = '';
+            document.getElementById('practiceOutput4').value = '';
+            document.getElementById('candidateList4').innerHTML = '';
+        }
+
+        function clearPractice5() {
+            document.getElementById('practiceInput5').value = '';
+            document.getElementById('practiceOutput5').value = '';
+            document.getElementById('candidateList5').innerHTML = '';
+        }
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            // Setup sidebar navigation
+            document.querySelectorAll('.lesson-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const lessonId = item.getAttribute('data-lesson');
+                    showLesson(lessonId);
+                });
+            });
+
+            // Setup all practice areas
+            setupPracticeArea('practiceInput', 'candidateList', 'practiceOutput');
+            setupPracticeArea('practiceInput2', 'candidateList2', 'practiceOutput2');
+            setupPracticeArea('practiceInput3', 'candidateList3', 'practiceOutput3');
+            setupPracticeArea('practiceInput4', 'candidateList4', 'practiceOutput4');
+            setupPracticeArea('practiceInput5', 'candidateList5', 'practiceOutput5');
+
+            // Show first lesson
+            showLesson(lessons[0]);
+        });
+    </script>
+</body>
+</html>
